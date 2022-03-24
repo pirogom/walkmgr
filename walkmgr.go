@@ -378,3 +378,17 @@ func (wm *walkmgr) End() {
 		parent.Children().Add(popData.(walk.Widget))
 	}
 }
+
+/**
+*	EndSplit
+**/
+func (wm *walkmgr) EndSplit() {
+	wm.End()
+}
+
+/**
+*	EndGroupBox
+**/
+func (wm *walkmgr) EndGroupBox() {
+	wm.End()
+}
