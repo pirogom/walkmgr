@@ -44,3 +44,15 @@ func (wm *walkmgr) Label(text string, at ...AlignType) *walk.Label {
 	wm.Append(ne)
 	return ne
 }
+
+func (wm *walkmgr) LabelCenter(text string) *walk.Label {
+	return wm.Label(text, ALIGN_CENTER)
+}
+
+func (wm *walkmgr) LabelRight(text string) *walk.Label {
+	return wm.Label(text, ALIGN_RIGHT)
+}
+
+func (wm *walkmgr) LabelLeft(text string) *walk.Label {
+	return wm.Label(text, ALIGN_LEFT)
+}
