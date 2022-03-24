@@ -5,7 +5,7 @@ import "github.com/pirogom/walk"
 /**
 *	CheckBox
 **/
-func (wm *walk_ui) CheckBox(text string, checked bool, attachFunc func()) *walk.CheckBox {
+func (wm *WalkUI) CheckBox(text string, checked bool, attachFunc func()) *walk.CheckBox {
 	cb, _ := walk.NewCheckBox(wm.Parent())
 	cb.SetText(text)
 	cb.SetChecked(checked)

@@ -33,7 +33,7 @@ func (t *TableHeader) Get() []TvHeader {
 /**
 *	TableView
 **/
-func (wm *walk_ui) TableView(model interface{}, header []TvHeader, checkBox bool, multiSelect bool) *walk.TableView {
+func (wm *WalkUI) TableView(model interface{}, header []TvHeader, checkBox bool, multiSelect bool) *walk.TableView {
 	tv, _ := walk.NewTableView(wm.Parent())
 	tv.SetCheckBoxes(checkBox)
 	tv.SetMultiSelection(multiSelect)
