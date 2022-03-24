@@ -44,4 +44,3 @@ func (wm *walkmgr) Label(text string, at ...AlignType) *walk.Label {
 	wm.Append(ne)
 	return ne
 }
-
