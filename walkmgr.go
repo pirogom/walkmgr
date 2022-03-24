@@ -11,8 +11,9 @@ import (
 *	walkmgr
 **/
 type walkmgr struct {
-	window     *walk.MainWindow
-	parentList *list.List
+	window       *walk.MainWindow
+	parentList   *list.List
+	startingFunc func()
 }
 
 /**
@@ -27,12 +28,12 @@ func NewWin(title string, width int, height int, lt ...LayoutType) *walkmgr {
 	cfg.Bounds.SetLocation(walk.Point{X: win.CW_USEDEFAULT, Y: win.CW_USEDEFAULT})
 	cfg.Bounds.SetSize(walk.Size{Width: width, Height: height})
 
-	win, winErr := walk.NewMainWindowWithCfg(&cfg)
+	window, winErr := walk.NewMainWindowWithCfg(&cfg)
 
 	if winErr != nil {
 		panic("create window failed. please check manifest and .syso")
 	}
-	wm.window = win
+	wm.window = window
 	wm.parentList = list.New()
 
 	wm.window.SetTitle(title)
@@ -57,7 +58,33 @@ func NewWin(title string, width int, height int, lt ...LayoutType) *walkmgr {
 		wm.window.SetIcon(defaultIcon)
 	}
 
+	wm.window.Starting().Attach(func() {
+		//
+		var x, y, width, height int32
+		var rtDesk, rtWindow win.RECT
+		win.GetWindowRect(win.GetDesktopWindow(), &rtDesk)
+		win.GetWindowRect(wm.window.Handle(), &rtWindow)
+
+		width = rtWindow.Right - rtWindow.Left
+		height = rtWindow.Bottom - rtWindow.Top
+		x = (rtDesk.Right - width) / 2
+		y = (rtDesk.Bottom - height) / 2
+
+		win.MoveWindow(wm.window.Handle(), x, y, width, height, true)
+		//
+		if wm.startingFunc != nil {
+			wm.startingFunc()
+		}
+	})
+
 	return &wm
+}
+
+/**
+*	Starting
+**/
+func (wm *walkmgr) Starting(startingFunc func()) {
+	wm.startingFunc = startingFunc
 }
 
 /**

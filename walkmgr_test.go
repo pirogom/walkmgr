@@ -306,7 +306,7 @@ func TestTv(t *testing.T) {
 		fmt.Println("직업:", tm.items[currIdx].Class)
 	})
 
-	wm.Window().Starting().Attach(func() {
+	wm.Starting(func() {
 		for i := 0; i < 10; i++ {
 			od := testTvItem{}
 			od.Name = fmt.Sprintf("사용자%02d", i)
