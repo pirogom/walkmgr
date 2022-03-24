@@ -212,6 +212,13 @@ func (wm *walkmgr) SetForeground() {
 }
 
 /**
+*	Close
+**/
+func (wm *walkmgr) Close() {
+	wm.window.Close()
+}
+
+/**
 *	Start
 **/
 func (wm *walkmgr) Start() {
@@ -303,9 +310,23 @@ func (wm *walkmgr) Parent() walk.Container {
 }
 
 /**
+*	HSplit
+**/
+func (wm *walkmgr) HSplit() *walk.Splitter {
+	return wm.Split(LAYOUT_HORI)
+}
+
+/**
+*	VSplit
+**/
+func (wm *walkmgr) VSplit() *walk.Splitter {
+	return wm.Split(LAYOUT_VERT)
+}
+
+/**
 *	Split
 **/
-func (wm *walkmgr) Split(lt ...LayoutType) (*walkmgr, *walk.Splitter) {
+func (wm *walkmgr) Split(lt ...LayoutType) *walk.Splitter {
 	var hs *walk.Splitter
 
 	if len(lt) == 0 {
@@ -321,7 +342,7 @@ func (wm *walkmgr) Split(lt ...LayoutType) (*walkmgr, *walk.Splitter) {
 		}
 	}
 	wm.parentList.PushBack(hs)
-	return wm, hs
+	return hs
 }
 
 /**
