@@ -59,25 +59,32 @@ func NewWin(title string, width int, height int, lt ...LayoutType) *walkmgr {
 	}
 
 	wm.window.Starting().Attach(func() {
-		//
-		var x, y, width, height int32
-		var rtDesk, rtWindow win.RECT
-		win.GetWindowRect(win.GetDesktopWindow(), &rtDesk)
-		win.GetWindowRect(wm.window.Handle(), &rtWindow)
-
-		width = rtWindow.Right - rtWindow.Left
-		height = rtWindow.Bottom - rtWindow.Top
-		x = (rtDesk.Right - width) / 2
-		y = (rtDesk.Bottom - height) / 2
-
-		win.MoveWindow(wm.window.Handle(), x, y, width, height, true)
-		//
+		wm.center()
 		if wm.startingFunc != nil {
 			wm.startingFunc()
 		}
 	})
 
 	return &wm
+}
+
+/**
+*	center
+**/
+func (wm *walkmgr) center() {
+	//
+	var x, y, width, height int32
+	var rtDesk, rtWindow win.RECT
+	win.GetWindowRect(win.GetDesktopWindow(), &rtDesk)
+	win.GetWindowRect(wm.GetHWND(), &rtWindow)
+
+	width = rtWindow.Right - rtWindow.Left
+	height = rtWindow.Bottom - rtWindow.Top
+	x = (rtDesk.Right - width) / 2
+	y = (rtDesk.Bottom - height) / 2
+
+	win.MoveWindow(wm.GetHWND(), x, y, width, height, true)
+	//
 }
 
 /**
