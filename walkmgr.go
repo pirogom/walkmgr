@@ -69,6 +69,15 @@ func NewWin(title string, width int, height int, lt ...LayoutType) *WalkUI {
 }
 
 /**
+*	NewFixed
+**/
+func NewFixed(title string, width int, height int, lt ...LayoutType) *WalkUI {
+	wm := NewWin(title, width, height, lt...)
+	wm.NoResize().DisableMinMaxBox()
+	return wm
+}
+
+/**
 *	NewAds
 **/
 func NewAds(title string, width int, height int) *WalkUI {
@@ -277,7 +286,10 @@ func (wm *WalkUI) SetForeground() {
 *	Close
 **/
 func (wm *WalkUI) Close() {
-	wm.window.Close()
+	wm.Sync(func() {
+		wm.window.SetVisible(false)
+		wm.window.Close()
+	})
 }
 
 /**
@@ -335,16 +347,6 @@ func (wm *WalkUI) IgnoreClosing() {
 **/
 func (wm *WalkUI) Sync(syncFunc func()) {
 	wm.window.Synchronize(syncFunc)
-}
-
-/**
-*	ForceClose
-**/
-func (wm *WalkUI) ForceClose() {
-	wm.Sync(func() {
-		wm.window.SetVisible(false)
-		wm.window.Close()
-	})
 }
 
 /**
