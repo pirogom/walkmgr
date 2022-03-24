@@ -259,11 +259,67 @@ func (wm *walkmgr) Append(item walk.Widget) {
 /**
 *	Parent
 **/
-func (m *walkmgr) Parent() walk.Container {
-	if m.parentList.Len() > 0 {
-		parent := m.parentList.Back().Value.(walk.Container)
+func (wm *walkmgr) Parent() walk.Container {
+	if wm.parentList.Len() > 0 {
+		parent := wm.parentList.Back().Value.(walk.Container)
 		return parent
 	} else {
-		return m.window
+		return wm.window
+	}
+}
+
+/**
+*	Split
+**/
+func (wm *walkmgr) Split(lt ...LayoutType) (*walkmgr, *walk.Splitter) {
+	var hs *walk.Splitter
+
+	if len(lt) == 0 {
+		hs, _ = walk.NewHSplitter(wm.Parent())
+	} else {
+		switch lt[0] {
+		case LAYOUT_VERT:
+			hs, _ = walk.NewVSplitter(wm.Parent())
+		case LAYOUT_HORI:
+			hs, _ = walk.NewHSplitter(wm.Parent())
+		default:
+			hs, _ = walk.NewHSplitter(wm.Parent())
+		}
+	}
+	wm.parentList.PushBack(hs)
+	return wm, hs
+}
+
+/**
+*	GroupBox
+**/
+func (wm *walkmgr) GroupBox(title string, lt ...LayoutType) (*walkmgr, *walk.GroupBox) {
+	gb, _ := walk.NewGroupBox(wm.Parent())
+	gb.SetTitle(title)
+
+	if len(lt) == 0 {
+		gb.SetLayout(walk.NewVBoxLayout())
+	} else {
+		switch lt[0] {
+		case LAYOUT_VERT:
+			gb.SetLayout(walk.NewVBoxLayout())
+		case LAYOUT_HORI:
+			gb.SetLayout(walk.NewHBoxLayout())
+		default:
+			gb.SetLayout(walk.NewVBoxLayout())
+		}
+	}
+	wm.parentList.PushBack(gb)
+	return wm, gb
+}
+
+/**
+*	End
+**/
+func (wm *walkmgr) End() {
+	if wm.parentList.Len() > 0 {
+		popData := wm.parentList.Remove(wm.parentList.Back())
+		parent := wm.Parent()
+		parent.Children().Add(popData.(walk.Widget))
 	}
 }

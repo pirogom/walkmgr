@@ -173,3 +173,55 @@ func TestHoriLayout(t *testing.T) {
 
 	wm.Start()
 }
+
+func TestHSplit(t *testing.T) {
+	wm := NewWin("HSplit", 640, 480)
+
+	wm.Split(LAYOUT_HORI)
+	wm.PushButton("버튼1", func() {
+	})
+	wm.PushButton("버튼2", func() {
+	})
+	wm.End()
+
+	wm.Start()
+}
+
+func TestVSplit(t *testing.T) {
+	wm := NewWin("VSplit", 640, 480)
+
+	wm.Split(LAYOUT_VERT)
+	wm.PushButton("버튼1", func() {
+	})
+	wm.PushButton("버튼2", func() {
+	})
+	wm.End()
+
+	wm.Start()
+}
+
+func TestGroupBox(t *testing.T) {
+	wm := NewWin("GroupBox(vert)", 640, 480)
+
+	wm.GroupBox("그룹박스(vert)", LAYOUT_VERT)
+	wm.PushButton("버튼1", func() {
+	})
+	wm.PushButton("버튼2", func() {
+	})
+	wm.End()
+
+	wm.Start()
+}
+
+func TestGroupBox2(t *testing.T) {
+	wm := NewWin("GroupBox(hori)", 640, 480)
+
+	wm.GroupBox("그룹박스(hori)", LAYOUT_HORI)
+	wm.PushButton("버튼1", func() {
+	})
+	wm.PushButton("버튼2", func() {
+	})
+	wm.End()
+
+	wm.Start()
+}
