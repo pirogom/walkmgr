@@ -69,6 +69,68 @@ func NewWin(title string, width int, height int, lt ...LayoutType) *walkmgr {
 }
 
 /**
+*	NewAds
+**/
+func NewAds(title string, width int, height int) *walkmgr {
+	wm := walkmgr{}
+
+	// set config
+	cfg := walk.MainWindowCfg{}
+	cfg.Name = defaultWinName
+	cfg.Bounds.SetLocation(walk.Point{X: win.CW_USEDEFAULT, Y: win.CW_USEDEFAULT})
+	cfg.Bounds.SetSize(walk.Size{Width: width, Height: height})
+
+	window, winErr := walk.NewMainWindowWithCfg(&cfg)
+
+	if winErr != nil {
+		panic("create window failed. please check manifest and .syso")
+	}
+	wm.window = window
+	wm.parentList = list.New()
+
+	wm.window.SetTitle(title)
+	layout := walk.NewVBoxLayout()
+	margin := walk.Margins{0, 0, 0, 0}
+	layout.SetMargins(margin)
+	layout.SetSpacing(0)
+	wm.window.SetLayout(layout)
+	wm.window.SetWidth(width)
+	wm.window.SetHeight(height)
+	wm.window.SetMinMaxSize(walk.Size{Width: width, Height: height}, walk.Size{Width: width, Height: height})
+
+	wm.NoResize()
+	wm.DisableTitleBar()
+
+	wm.window.Starting().Attach(func() {
+		wm.adsPosition()
+
+		if wm.startingFunc != nil {
+			wm.startingFunc()
+		}
+	})
+
+	return &wm
+}
+
+/**
+*	adsPosition
+**/
+func (wm *walkmgr) adsPosition() {
+	var x, y, width, height int32
+	var rtDesk, rtWindow win.RECT
+	win.GetWindowRect(win.GetDesktopWindow(), &rtDesk)
+	win.GetWindowRect(wm.GetHWND(), &rtWindow)
+
+	width = rtWindow.Right - rtWindow.Left
+	height = rtWindow.Bottom - rtWindow.Top
+
+	x = rtDesk.Right - width
+	y = rtDesk.Bottom - (height + 40)
+
+	win.MoveWindow(wm.GetHWND(), x, y, width, height, true)
+}
+
+/**
 *	center
 **/
 func (wm *walkmgr) center() {
