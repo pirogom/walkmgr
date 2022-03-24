@@ -11,21 +11,29 @@ type TvHeader struct {
 	Align string
 }
 
-// type TableHeader struct {
-// 	Header []TvHeader
-// }
+type TableHeader struct {
+	Header []TvHeader
+}
 
-// func (t *TableHeader) Append(title string, width int, height int) *TableHeader {
+func NewTH(title string, width int) *TableHeader {
+	th := TableHeader{}
+	th.Add(title, width)
+	return &th
+}
 
-// 	t.Header = Append(t.Header, TvHeader{Title: title, Width:width})
+func (t *TableHeader) Add(title string, width int) *TableHeader {
+	t.Header = append(t.Header, TvHeader{Title: title, Width: width})
+	return t
+}
 
-// }
+func (t *TableHeader) Get() []TvHeader {
+	return t.Header
+}
 
 /**
 *	TableView
 **/
 func (wm *walkmgr) TableView(model interface{}, header []TvHeader, checkBox bool, multiSelect bool) *walk.TableView {
-
 	tv, _ := walk.NewTableView(wm.Parent())
 	tv.SetCheckBoxes(checkBox)
 	tv.SetMultiSelection(multiSelect)

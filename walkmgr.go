@@ -68,9 +68,9 @@ func (wm *walkmgr) GetHWND() win.HWND {
 }
 
 /**
-*	GetWindow
+*	Window
 **/
-func (wm *walkmgr) GetWindow() *walk.MainWindow {
+func (wm *walkmgr) Window() *walk.MainWindow {
 	return wm.window
 }
 
