@@ -7,51 +7,51 @@ import (
 )
 
 func TestDefaultWin(t *testing.T) {
-	wm := NewWin("기본윈도", 640, 480, LAYOUT_VERT)
+	wm := NewWin("기본윈도", 640, 480)
 	wm.Start()
 }
 
 func TestForegroundWin(t *testing.T) {
-	wm := NewWin("기본윈도-최상단에 생성", 640, 480, LAYOUT_VERT)
+	wm := NewWin("기본윈도-최상단에 생성", 640, 480)
 	wm.StartForeground()
 }
 
 func TestNoMinBox(t *testing.T) {
-	wm := NewWin("기본윈도-최소화X", 640, 480, LAYOUT_VERT)
+	wm := NewWin("기본윈도-최소화X", 640, 480)
 	wm.DisableMinBox()
 
 	wm.Start()
 }
 
 func TestNoMaxBox(t *testing.T) {
-	wm := NewWin("기본윈도-최대화X", 640, 480, LAYOUT_VERT)
+	wm := NewWin("기본윈도-최대화X", 640, 480)
 	wm.DisableMaxBox()
 
 	wm.Start()
 }
 
 func TestNoSysMenu(t *testing.T) {
-	wm := NewWin("기본윈도-시스템메뉴X", 640, 480, LAYOUT_VERT)
+	wm := NewWin("기본윈도-시스템메뉴X", 640, 480)
 	wm.DisableSysmenu()
 
 	wm.Start()
 }
 
 func TestNoTitle(t *testing.T) {
-	wm := NewWin("기본윈도-타이틀바X", 640, 480, LAYOUT_VERT)
+	wm := NewWin("기본윈도-타이틀바X", 640, 480)
 	wm.DisableTitleBar()
 
 	wm.Start()
 }
 
 func TestNoResize(t *testing.T) {
-	wm := NewWin("기본윈도-사이즈변경X", 640, 480, LAYOUT_VERT)
+	wm := NewWin("기본윈도-사이즈변경X", 640, 480)
 	wm.NoResize()
 	wm.Start()
 }
 
 func TestUI(t *testing.T) {
-	wm := NewWin("UI테스트", 640, 1080, LAYOUT_VERT)
+	wm := NewWin("UI테스트", 640, 1080)
 
 	// 버튼
 	wm.PushButton("버튼", func() {
@@ -116,7 +116,7 @@ func TestImageView(t *testing.T) {
 		}
 	}(img)
 
-	wm := NewWin("이미지뷰", 640, 480, LAYOUT_VERT)
+	wm := NewWin("이미지뷰", 640, 480)
 
 	iv := wm.ImageView(IV_ZOOM)
 	iv.SetImage(*img)
@@ -125,7 +125,7 @@ func TestImageView(t *testing.T) {
 }
 
 func TestWebView(t *testing.T) {
-	wm := NewWin("웹뷰(Alert Disabled)", 640, 480, LAYOUT_VERT)
+	wm := NewWin("웹뷰(Alert Disabled)", 640, 480)
 
 	wm.WebView("https://modu-print.tistory.com")
 
@@ -133,9 +133,43 @@ func TestWebView(t *testing.T) {
 }
 
 func TestWebViewWithAlert(t *testing.T) {
-	wm := NewWin("웹뷰(Alert Enabled)", 640, 480, LAYOUT_VERT)
+	wm := NewWin("웹뷰(Alert Enabled)", 640, 480)
 
 	wm.WebViewWithAlert("https://modu-print.tistory.com")
+
+	wm.Start()
+}
+
+func TestIgnoreClose(t *testing.T) {
+	wm := NewWin("닫지 못하는 창", 640, 480)
+
+	wm.PushButton("강제닫음", func() {
+		wm.ForceClose()
+	})
+	wm.IgnoreClosing()
+
+	wm.Start()
+}
+
+func TestVertLayout(t *testing.T) {
+	//wm := NewWin("", 640, 480) default layout is vertical
+	wm := NewWin("LAYOUT_VERT", 640, 480, LAYOUT_VERT)
+
+	wm.PushButton("버튼1", func() {
+	})
+	wm.PushButton("버튼2", func() {
+	})
+
+	wm.Start()
+}
+
+func TestHoriLayout(t *testing.T) {
+	wm := NewWin("LAYOUT_HORI", 640, 480, LAYOUT_HORI)
+
+	wm.PushButton("버튼1", func() {
+	})
+	wm.PushButton("버튼2", func() {
+	})
 
 	wm.Start()
 }

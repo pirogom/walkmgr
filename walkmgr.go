@@ -18,7 +18,7 @@ type walkmgr struct {
 /**
 *	NewWin
 **/
-func NewWin(title string, width int, height int, lt LayoutType) *walkmgr {
+func NewWin(title string, width int, height int, lt ...LayoutType) *walkmgr {
 	wm := walkmgr{}
 
 	// set config
@@ -39,13 +39,17 @@ func NewWin(title string, width int, height int, lt LayoutType) *walkmgr {
 	wm.window.SetWidth(width)
 	wm.window.SetHeight(height)
 
-	// set layout
-	switch lt {
-	case LAYOUT_VERT:
-		wm.window.SetLayout(walk.NewVBoxLayout())
-	case LAYOUT_HORI:
-		wm.window.SetLayout(walk.NewHBoxLayout())
-	default:
+	if len(lt) > 0 {
+		// set layout
+		switch lt[0] {
+		case LAYOUT_VERT:
+			wm.window.SetLayout(walk.NewVBoxLayout())
+		case LAYOUT_HORI:
+			wm.window.SetLayout(walk.NewHBoxLayout())
+		default:
+			wm.window.SetLayout(walk.NewVBoxLayout())
+		}
+	} else {
 		wm.window.SetLayout(walk.NewVBoxLayout())
 	}
 
