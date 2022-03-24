@@ -5,7 +5,7 @@ import "github.com/pirogom/walk"
 /**
 *	DropDownBox
 **/
-func (wm *walkmgr) DropDownBox(data []string, defIdx ...int) *walk.ComboBox {
+func (wm *walk_ui) DropDownBox(data []string, defIdx ...int) *walk.ComboBox {
 	cb, _ := walk.NewDropDownBox(wm.Parent())
 	cb.SetModel(data)
 

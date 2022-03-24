@@ -8,7 +8,7 @@ import (
 /**
 *	MultiLineLabel
 **/
-func (wm *walkmgr) MultiLineLabel(text string) *walk.Label {
+func (wm *walk_ui) MultiLineLabel(text string) *walk.Label {
 	ne, _ := walk.NewLabelWithStyle(wm.Parent(), win.SS_EDITCONTROL)
 	ne.SetText(text)
 	ne.SetAlignment(walk.AlignHCenterVCenter)
@@ -21,7 +21,7 @@ func (wm *walkmgr) MultiLineLabel(text string) *walk.Label {
 /**
 *	Label
 **/
-func (wm *walkmgr) Label(text string, at ...AlignType) *walk.Label {
+func (wm *walk_ui) Label(text string, at ...AlignType) *walk.Label {
 	ne, _ := walk.NewLabel(wm.Parent())
 
 	ne.SetText(text)
@@ -45,14 +45,14 @@ func (wm *walkmgr) Label(text string, at ...AlignType) *walk.Label {
 	return ne
 }
 
-func (wm *walkmgr) LabelCenter(text string) *walk.Label {
+func (wm *walk_ui) LabelCenter(text string) *walk.Label {
 	return wm.Label(text, ALIGN_CENTER)
 }
 
-func (wm *walkmgr) LabelRight(text string) *walk.Label {
+func (wm *walk_ui) LabelRight(text string) *walk.Label {
 	return wm.Label(text, ALIGN_RIGHT)
 }
 
-func (wm *walkmgr) LabelLeft(text string) *walk.Label {
+func (wm *walk_ui) LabelLeft(text string) *walk.Label {
 	return wm.Label(text, ALIGN_LEFT)
 }

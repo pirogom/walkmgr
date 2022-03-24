@@ -8,7 +8,7 @@ import (
 /**
 *	NumberEdit
 **/
-func (wm *walkmgr) NumberEdit(val ...int) *walk.NumberEdit {
+func (wm *walk_ui) NumberEdit(val ...int) *walk.NumberEdit {
 	ne, _ := walk.NewNumberEdit(wm.Parent())
 	if len(val) > 0 {
 		ne.SetValue(float64(val[0]))
@@ -20,7 +20,7 @@ func (wm *walkmgr) NumberEdit(val ...int) *walk.NumberEdit {
 /**
 *	LineEdit
 **/
-func (wm *walkmgr) LineEdit(msg ...string) *walk.LineEdit {
+func (wm *walk_ui) LineEdit(msg ...string) *walk.LineEdit {
 	ne, _ := walk.NewLineEdit(wm.Parent())
 	if len(msg) > 0 {
 		ne.SetText(msg[0])
@@ -32,7 +32,7 @@ func (wm *walkmgr) LineEdit(msg ...string) *walk.LineEdit {
 /**
 *	LineStatic
 **/
-func (wm *walkmgr) LineStatic(msg ...string) *walk.LineEdit {
+func (wm *walk_ui) LineStatic(msg ...string) *walk.LineEdit {
 	ne, _ := walk.NewLineEdit(wm.Parent())
 	if len(msg) > 0 {
 		ne.SetText(msg[0])
@@ -45,7 +45,7 @@ func (wm *walkmgr) LineStatic(msg ...string) *walk.LineEdit {
 /**
 *	TextEdit
 **/
-func (wm *walkmgr) TextEdit(msg ...string) *walk.TextEdit {
+func (wm *walk_ui) TextEdit(msg ...string) *walk.TextEdit {
 	ne, _ := walk.NewTextEdit(wm.Parent())
 	if len(msg) > 0 {
 		ne.SetText(msg[0])
@@ -57,7 +57,7 @@ func (wm *walkmgr) TextEdit(msg ...string) *walk.TextEdit {
 /**
 *	TextStatic
 **/
-func (wm *walkmgr) TextStatic(msg ...string) *walk.TextEdit {
+func (wm *walk_ui) TextStatic(msg ...string) *walk.TextEdit {
 	ne, _ := walk.NewTextEdit(wm.Parent())
 	if len(msg) > 0 {
 		ne.SetText(msg[0])
@@ -70,7 +70,7 @@ func (wm *walkmgr) TextStatic(msg ...string) *walk.TextEdit {
 /**
 *	TextArea
 **/
-func (wm *walkmgr) TextArea(msg ...string) *walk.TextEdit {
+func (wm *walk_ui) TextArea(msg ...string) *walk.TextEdit {
 	ne, _ := walk.NewTextEditWithStyle(wm.Parent(), win.WS_VSCROLL)
 	if len(msg) > 0 {
 		ne.SetText(msg[0])
@@ -82,7 +82,7 @@ func (wm *walkmgr) TextArea(msg ...string) *walk.TextEdit {
 /**
 *	TextAreaStatic
 **/
-func (wm *walkmgr) TextAreaStatic(msg ...string) *walk.TextEdit {
+func (wm *walk_ui) TextAreaStatic(msg ...string) *walk.TextEdit {
 	ne, _ := walk.NewTextEditWithStyle(wm.Parent(), win.WS_VSCROLL)
 	if len(msg) > 0 {
 		ne.SetText(msg[0])

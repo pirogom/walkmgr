@@ -8,9 +8,9 @@ import (
 )
 
 /**
-*	walkmgr
+*	walk_ui
 **/
-type walkmgr struct {
+type walk_ui struct {
 	window       *walk.MainWindow
 	parentList   *list.List
 	startingFunc func()
@@ -19,8 +19,8 @@ type walkmgr struct {
 /**
 *	NewWin
 **/
-func NewWin(title string, width int, height int, lt ...LayoutType) *walkmgr {
-	wm := walkmgr{}
+func NewWin(title string, width int, height int, lt ...LayoutType) *walk_ui {
+	wm := walk_ui{}
 
 	// set config
 	cfg := walk.MainWindowCfg{}
@@ -71,8 +71,8 @@ func NewWin(title string, width int, height int, lt ...LayoutType) *walkmgr {
 /**
 *	NewAds
 **/
-func NewAds(title string, width int, height int) *walkmgr {
-	wm := walkmgr{}
+func NewAds(title string, width int, height int) *walk_ui {
+	wm := walk_ui{}
 
 	// set config
 	cfg := walk.MainWindowCfg{}
@@ -115,7 +115,7 @@ func NewAds(title string, width int, height int) *walkmgr {
 /**
 *	adsPosition
 **/
-func (wm *walkmgr) adsPosition() {
+func (wm *walk_ui) adsPosition() {
 	var x, y, width, height int32
 	var rtDesk, rtWindow win.RECT
 	win.GetWindowRect(win.GetDesktopWindow(), &rtDesk)
@@ -133,7 +133,7 @@ func (wm *walkmgr) adsPosition() {
 /**
 *	center
 **/
-func (wm *walkmgr) center() {
+func (wm *walk_ui) center() {
 	//
 	var x, y, width, height int32
 	var rtDesk, rtWindow win.RECT
@@ -152,28 +152,28 @@ func (wm *walkmgr) center() {
 /**
 *	Starting
 **/
-func (wm *walkmgr) Starting(startingFunc func()) {
+func (wm *walk_ui) Starting(startingFunc func()) {
 	wm.startingFunc = startingFunc
 }
 
 /**
 *	GetHWND
 **/
-func (wm *walkmgr) GetHWND() win.HWND {
+func (wm *walk_ui) GetHWND() win.HWND {
 	return wm.window.Handle()
 }
 
 /**
 *	Window
 **/
-func (wm *walkmgr) Window() *walk.MainWindow {
+func (wm *walk_ui) Window() *walk.MainWindow {
 	return wm.window
 }
 
 /**
 *	SetTitle
 **/
-func (wm *walkmgr) SetTitle(title string) *walkmgr {
+func (wm *walk_ui) SetTitle(title string) *walk_ui {
 	wm.window.SetTitle(title)
 	return wm
 }
@@ -181,7 +181,7 @@ func (wm *walkmgr) SetTitle(title string) *walkmgr {
 /**
 *	SetSize
 **/
-func (wm *walkmgr) SetSize(width int, height int) *walkmgr {
+func (wm *walk_ui) SetSize(width int, height int) *walk_ui {
 	wm.window.SetWidth(width)
 	wm.window.SetHeight(height)
 	return wm
@@ -190,7 +190,7 @@ func (wm *walkmgr) SetSize(width int, height int) *walkmgr {
 /**
 *	SetMinSize
 **/
-func (wm *walkmgr) SetMinSize(width int, height int) *walkmgr {
+func (wm *walk_ui) SetMinSize(width int, height int) *walk_ui {
 	maxSize := wm.window.MaxSize()
 	wm.window.SetMinMaxSize(walk.Size{Width: width, Height: height}, maxSize)
 	return wm
@@ -199,7 +199,7 @@ func (wm *walkmgr) SetMinSize(width int, height int) *walkmgr {
 /**
 *	SetMaxSize
 **/
-func (wm *walkmgr) SetMaxSize(width int, height int) *walkmgr {
+func (wm *walk_ui) SetMaxSize(width int, height int) *walk_ui {
 	minSize := wm.window.MinSize()
 	wm.window.SetMinMaxSize(minSize, walk.Size{Width: width, Height: height})
 	return wm
@@ -208,7 +208,7 @@ func (wm *walkmgr) SetMaxSize(width int, height int) *walkmgr {
 /**
 * NoResize
 **/
-func (wm *walkmgr) NoResize() *walkmgr {
+func (wm *walk_ui) NoResize() *walk_ui {
 	defStyle := win.GetWindowLong(wm.GetHWND(), win.GWL_STYLE)
 	newStyle := defStyle &^ win.WS_THICKFRAME
 	win.SetWindowLong(wm.GetHWND(), win.GWL_STYLE, newStyle)
@@ -218,7 +218,7 @@ func (wm *walkmgr) NoResize() *walkmgr {
 /**
 *	DisableMinBox
 **/
-func (wm *walkmgr) DisableMinBox() *walkmgr {
+func (wm *walk_ui) DisableMinBox() *walk_ui {
 	defStyle := win.GetWindowLong(wm.GetHWND(), win.GWL_STYLE)
 	newStyle := defStyle &^ win.WS_MINIMIZEBOX
 	win.SetWindowLong(wm.GetHWND(), win.GWL_STYLE, newStyle)
@@ -228,7 +228,7 @@ func (wm *walkmgr) DisableMinBox() *walkmgr {
 /**
 *	DisableMaxBox
 **/
-func (wm *walkmgr) DisableMaxBox() *walkmgr {
+func (wm *walk_ui) DisableMaxBox() *walk_ui {
 	defStyle := win.GetWindowLong(wm.GetHWND(), win.GWL_STYLE)
 	newStyle := defStyle &^ win.WS_MAXIMIZEBOX
 	win.SetWindowLong(wm.GetHWND(), win.GWL_STYLE, newStyle)
@@ -238,7 +238,7 @@ func (wm *walkmgr) DisableMaxBox() *walkmgr {
 /**
 *	DisableMinMaxBox
 **/
-func (wm *walkmgr) DisableMinMaxBox() *walkmgr {
+func (wm *walk_ui) DisableMinMaxBox() *walk_ui {
 	defStyle := win.GetWindowLong(wm.GetHWND(), win.GWL_STYLE)
 	newStyle := defStyle &^ win.WS_MINIMIZEBOX
 	newStyle = newStyle &^ win.WS_MAXIMIZEBOX
@@ -249,7 +249,7 @@ func (wm *walkmgr) DisableMinMaxBox() *walkmgr {
 /**
 *	DisableSysmenu
 **/
-func (wm *walkmgr) DisableSysmenu() *walkmgr {
+func (wm *walk_ui) DisableSysmenu() *walk_ui {
 	defStyle := win.GetWindowLong(wm.GetHWND(), win.GWL_STYLE)
 	newStyle := defStyle &^ win.WS_SYSMENU
 	win.SetWindowLong(wm.GetHWND(), win.GWL_STYLE, newStyle)
@@ -259,7 +259,7 @@ func (wm *walkmgr) DisableSysmenu() *walkmgr {
 /**
 *	DisableTitleBar
 **/
-func (wm *walkmgr) DisableTitleBar() *walkmgr {
+func (wm *walk_ui) DisableTitleBar() *walk_ui {
 	defStyle := win.GetWindowLong(wm.GetHWND(), win.GWL_STYLE)
 	newStyle := defStyle &^ win.WS_CAPTION
 	win.SetWindowLong(wm.GetHWND(), win.GWL_STYLE, newStyle)
@@ -269,21 +269,21 @@ func (wm *walkmgr) DisableTitleBar() *walkmgr {
 /**
 *	SetForeground
 **/
-func (wm *walkmgr) SetForeground() {
+func (wm *walk_ui) SetForeground() {
 	win.SetForegroundWindow(wm.GetHWND())
 }
 
 /**
 *	Close
 **/
-func (wm *walkmgr) Close() {
+func (wm *walk_ui) Close() {
 	wm.window.Close()
 }
 
 /**
 *	Start
 **/
-func (wm *walkmgr) Start() {
+func (wm *walk_ui) Start() {
 	wm.window.Show()
 	wm.window.Run()
 }
@@ -291,7 +291,7 @@ func (wm *walkmgr) Start() {
 /**
 *	StartForeground
 **/
-func (wm *walkmgr) StartForeground() {
+func (wm *walk_ui) StartForeground() {
 	wm.SetForeground()
 	wm.window.Show()
 	wm.window.Run()
@@ -300,7 +300,7 @@ func (wm *walkmgr) StartForeground() {
 /**
 *	HideStart
 **/
-func (wm *walkmgr) HideStart() {
+func (wm *walk_ui) HideStart() {
 	wm.window.Hide()
 	wm.window.Run()
 }
@@ -308,21 +308,21 @@ func (wm *walkmgr) HideStart() {
 /**
 *	Hide
 **/
-func (wm *walkmgr) Hide() {
+func (wm *walk_ui) Hide() {
 	wm.window.Hide()
 }
 
 /**
 *	Show
 **/
-func (wm *walkmgr) Show() {
+func (wm *walk_ui) Show() {
 	wm.window.Show()
 }
 
 /**
 *	IgnoreClosing
 **/
-func (wm *walkmgr) IgnoreClosing() {
+func (wm *walk_ui) IgnoreClosing() {
 	wm.window.Closing().Attach(func(canceled *bool, reason walk.CloseReason) {
 		if wm.window.Visible() {
 			*canceled = true
@@ -333,14 +333,14 @@ func (wm *walkmgr) IgnoreClosing() {
 /**
 *	Sync
 **/
-func (wm *walkmgr) Sync(syncFunc func()) {
+func (wm *walk_ui) Sync(syncFunc func()) {
 	wm.window.Synchronize(syncFunc)
 }
 
 /**
 *	ForceClose
 **/
-func (wm *walkmgr) ForceClose() {
+func (wm *walk_ui) ForceClose() {
 	wm.Sync(func() {
 		wm.window.SetVisible(false)
 		wm.window.Close()
@@ -350,7 +350,7 @@ func (wm *walkmgr) ForceClose() {
 /**
 * Append
 **/
-func (wm *walkmgr) Append(item walk.Widget) {
+func (wm *walk_ui) Append(item walk.Widget) {
 	if wm.parentList.Len() == 0 {
 		wm.window.Children().Add(item)
 	} else {
@@ -362,7 +362,7 @@ func (wm *walkmgr) Append(item walk.Widget) {
 /**
 *	Parent
 **/
-func (wm *walkmgr) Parent() walk.Container {
+func (wm *walk_ui) Parent() walk.Container {
 	if wm.parentList.Len() > 0 {
 		parent := wm.parentList.Back().Value.(walk.Container)
 		return parent
@@ -374,21 +374,21 @@ func (wm *walkmgr) Parent() walk.Container {
 /**
 *	HSplit
 **/
-func (wm *walkmgr) HSplit() *walk.Splitter {
+func (wm *walk_ui) HSplit() *walk.Splitter {
 	return wm.Split(LAYOUT_HORI)
 }
 
 /**
 *	VSplit
 **/
-func (wm *walkmgr) VSplit() *walk.Splitter {
+func (wm *walk_ui) VSplit() *walk.Splitter {
 	return wm.Split(LAYOUT_VERT)
 }
 
 /**
 *	Split
 **/
-func (wm *walkmgr) Split(lt ...LayoutType) *walk.Splitter {
+func (wm *walk_ui) Split(lt ...LayoutType) *walk.Splitter {
 	var hs *walk.Splitter
 
 	if len(lt) == 0 {
@@ -410,7 +410,7 @@ func (wm *walkmgr) Split(lt ...LayoutType) *walk.Splitter {
 /**
 *	GroupBox
 **/
-func (wm *walkmgr) GroupBox(title string, lt ...LayoutType) (*walkmgr, *walk.GroupBox) {
+func (wm *walk_ui) GroupBox(title string, lt ...LayoutType) (*walk_ui, *walk.GroupBox) {
 	gb, _ := walk.NewGroupBox(wm.Parent())
 	gb.SetTitle(title)
 
@@ -433,7 +433,7 @@ func (wm *walkmgr) GroupBox(title string, lt ...LayoutType) (*walkmgr, *walk.Gro
 /**
 *	End
 **/
-func (wm *walkmgr) End() {
+func (wm *walk_ui) End() {
 	if wm.parentList.Len() > 0 {
 		popData := wm.parentList.Remove(wm.parentList.Back())
 		parent := wm.Parent()
@@ -444,13 +444,13 @@ func (wm *walkmgr) End() {
 /**
 *	EndSplit
 **/
-func (wm *walkmgr) EndSplit() {
+func (wm *walk_ui) EndSplit() {
 	wm.End()
 }
 
 /**
 *	EndGroupBox
 **/
-func (wm *walkmgr) EndGroupBox() {
+func (wm *walk_ui) EndGroupBox() {
 	wm.End()
 }

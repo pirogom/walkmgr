@@ -5,7 +5,7 @@ import "github.com/pirogom/walk"
 /**
 *	ImageView
 **/
-func (wm *walkmgr) ImageView(mode ...walk.ImageViewMode) *walk.ImageView {
+func (wm *walk_ui) ImageView(mode ...walk.ImageViewMode) *walk.ImageView {
 	iv, _ := walk.NewImageView(wm.Parent())
 
 	if len(mode) > 0 {
