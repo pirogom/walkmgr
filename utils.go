@@ -73,3 +73,22 @@ func LoadIconFromFile(icoPath string) {
 func SetDefaultWindowName(name string) {
 	defaultWinName = name
 }
+
+/**
+*	SetMultiLineText
+**/
+func MultiLineText(text string, limit int) string {
+	runeText := []rune(text)
+	var res string
+
+	for {
+		if len(runeText) <= limit {
+			res += string(runeText)
+			break
+		}
+
+		res += string(runeText[:limit]) + "\n"
+		runeText = runeText[limit:]
+	}
+	return res
+}

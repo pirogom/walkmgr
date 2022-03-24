@@ -18,7 +18,7 @@ type walkmgr struct {
 /**
 *	NewWin
 **/
-func NewWin(title string, width int, height int, lt layoutType) *walkmgr {
+func NewWin(title string, width int, height int, lt LayoutType) *walkmgr {
 	wm := walkmgr{}
 
 	// set config
@@ -238,4 +238,28 @@ func (wm *walkmgr) ForceClose() {
 		wm.window.SetVisible(false)
 		wm.window.Close()
 	})
+}
+
+/**
+* Append
+**/
+func (wm *walkmgr) Append(item walk.Widget) {
+	if wm.parentList.Len() == 0 {
+		wm.window.Children().Add(item)
+	} else {
+		parent := wm.parentList.Back().Value.(walk.Container)
+		parent.Children().Add(item)
+	}
+}
+
+/**
+*	Parent
+**/
+func (m *walkmgr) Parent() walk.Container {
+	if m.parentList.Len() > 0 {
+		parent := m.parentList.Back().Value.(walk.Container)
+		return parent
+	} else {
+		return m.window
+	}
 }

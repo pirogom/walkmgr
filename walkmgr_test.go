@@ -42,3 +42,4 @@ func TestNoResize(t *testing.T) {
 	wm.NoResize()
 	wm.Start()
 }
+
