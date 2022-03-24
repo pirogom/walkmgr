@@ -22,10 +22,15 @@ func NewWin(title string, width int, height int, lt layoutType) *walkmgr {
 	wm := walkmgr{}
 
 	// set config
-	win, winErr := walk.NewMainWindowWithName(defaultWinName)
+	cfg := walk.MainWindowCfg{}
+	cfg.Name = defaultWinName
+	cfg.Bounds.SetLocation(walk.Point{X: win.CW_USEDEFAULT, Y: win.CW_USEDEFAULT})
+	cfg.Bounds.SetSize(walk.Size{Width: width, Height: height})
+
+	win, winErr := walk.NewMainWindowWithCfg(&cfg)
 
 	if winErr != nil {
-		return nil
+		panic("create window failed. please check manifest and .syso")
 	}
 	wm.window = win
 	wm.parentList = list.New()
@@ -142,9 +147,9 @@ func (wm *walkmgr) DisableMinMaxBox() *walkmgr {
 }
 
 /**
-*	DisableCloseBox
+*	DisableSysmenu
 **/
-func (wm *walkmgr) DisableCloseBox() *walkmgr {
+func (wm *walkmgr) DisableSysmenu() *walkmgr {
 	defStyle := win.GetWindowLong(wm.GetHWND(), win.GWL_STYLE)
 	newStyle := defStyle &^ win.WS_SYSMENU
 	win.SetWindowLong(wm.GetHWND(), win.GWL_STYLE, newStyle)
@@ -205,4 +210,32 @@ func (wm *walkmgr) Hide() {
 **/
 func (wm *walkmgr) Show() {
 	wm.window.Show()
+}
+
+/**
+*	IgnoreClosing
+**/
+func (wm *walkmgr) IgnoreClosing() {
+	wm.window.Closing().Attach(func(canceled *bool, reason walk.CloseReason) {
+		if wm.window.Visible() {
+			*canceled = true
+		}
+	})
+}
+
+/**
+*	Sync
+**/
+func (wm *walkmgr) Sync(syncFunc func()) {
+	wm.window.Synchronize(syncFunc)
+}
+
+/**
+*	ForceClose
+**/
+func (wm *walkmgr) ForceClose() {
+	wm.Sync(func() {
+		wm.window.SetVisible(false)
+		wm.window.Close()
+	})
 }
