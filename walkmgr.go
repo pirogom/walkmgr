@@ -198,13 +198,13 @@ func (wm *WalkUI) center() {
 /**
 *	Starting
 **/
-func (wm *WalkUI) Starting(startingFunc func()) {
+func (wm *WalkUI) Starting(startingFunc WinStartFunc) {
 	wm.startingFunc = startingFunc
 }
 
-func (wm *WalkUI) Closing(closingFunc func() bool {
+func (wm *WalkUI) Closing(closingFunc WinCloseFunc) {
 	wm.closingFunc = closingFunc
-})
+}
 
 /**
 *	GetHWND
@@ -376,7 +376,7 @@ func (wm *WalkUI) Show() {
 *	IgnoreClosing
 **/
 func (wm *WalkUI) IgnoreClosing() {
-	wm.ignoreClose = true
+	wm.IsIgnoreClose = true
 }
 
 /**
