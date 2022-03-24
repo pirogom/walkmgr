@@ -7,13 +7,18 @@ import (
 	"github.com/pirogom/win"
 )
 
+type WinCloseFunc func() bool
+type WinStartFunc func()
+
 /**
 *	WalkUI
 **/
 type WalkUI struct {
-	window       *walk.MainWindow
-	parentList   *list.List
-	startingFunc func()
+	window        *walk.MainWindow
+	parentList    *list.List
+	IsIgnoreClose bool
+	startingFunc  WinStartFunc
+	closingFunc   WinCloseFunc
 }
 
 /**
@@ -58,10 +63,26 @@ func NewWin(title string, width int, height int, lt ...LayoutType) *WalkUI {
 		wm.window.SetIcon(defaultIcon)
 	}
 
+	// windows start
 	wm.window.Starting().Attach(func() {
 		wm.center()
 		if wm.startingFunc != nil {
 			wm.startingFunc()
+		}
+	})
+
+	// closing
+	wm.window.Closing().Attach(func(canceled *bool, reason walk.CloseReason) {
+		if wm.IsIgnoreClose && wm.Window().Visible() {
+			*canceled = true
+			return
+		}
+
+		if wm.closingFunc != nil {
+			if !wm.closingFunc() {
+				*canceled = true
+				return
+			}
 		}
 	})
 
@@ -110,11 +131,27 @@ func NewAds(title string, width int, height int) *WalkUI {
 	wm.NoResize()
 	wm.DisableTitleBar()
 
+	// starting
 	wm.window.Starting().Attach(func() {
 		wm.adsPosition()
 
 		if wm.startingFunc != nil {
 			wm.startingFunc()
+		}
+	})
+
+	// closing
+	wm.window.Closing().Attach(func(canceled *bool, reason walk.CloseReason) {
+		if wm.IsIgnoreClose && wm.Window().Visible() {
+			*canceled = true
+			return
+		}
+
+		if wm.closingFunc != nil {
+			if !wm.closingFunc() {
+				*canceled = true
+				return
+			}
 		}
 	})
 
@@ -164,6 +201,10 @@ func (wm *WalkUI) center() {
 func (wm *WalkUI) Starting(startingFunc func()) {
 	wm.startingFunc = startingFunc
 }
+
+func (wm *WalkUI) Closing(closingFunc func() bool {
+	wm.closingFunc = closingFunc
+})
 
 /**
 *	GetHWND
@@ -335,11 +376,7 @@ func (wm *WalkUI) Show() {
 *	IgnoreClosing
 **/
 func (wm *WalkUI) IgnoreClosing() {
-	wm.window.Closing().Attach(func(canceled *bool, reason walk.CloseReason) {
-		if wm.window.Visible() {
-			*canceled = true
-		}
-	})
+	wm.ignoreClose = true
 }
 
 /**
