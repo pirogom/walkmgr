@@ -159,13 +159,6 @@ func NewAds(title string, width int, height int) *WalkUI {
 }
 
 /**
-*	SetTitle
-**/
-func (wm *WalkUI) SetTitle(title string) {
-	wm.window.SetTitle(title)
-}
-
-/**
 *	adsPosition
 **/
 func (wm *WalkUI) adsPosition() {
