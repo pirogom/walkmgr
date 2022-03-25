@@ -449,9 +449,12 @@ func (wm *WalkUI) Split(lt ...LayoutType) *walk.Splitter {
 /**
 *	GroupBox
 **/
-func (wm *WalkUI) GroupBox(title string, lt ...LayoutType) (*WalkUI, *walk.GroupBox) {
+func (wm *WalkUI) GroupBox(title string, lt ...LayoutType) *walk.GroupBox {
 	gb, _ := walk.NewGroupBox(wm.Parent())
-	gb.SetTitle(title)
+
+	if title != "" {
+		gb.SetTitle(title)
+	}
 
 	if len(lt) == 0 {
 		gb.SetLayout(walk.NewVBoxLayout())
@@ -466,7 +469,35 @@ func (wm *WalkUI) GroupBox(title string, lt ...LayoutType) (*WalkUI, *walk.Group
 		}
 	}
 	wm.parentList.PushBack(gb)
-	return wm, gb
+	return gb
+}
+
+/**
+*	HGroupBox
+**/
+func (wm *WalkUI) HGroupBox(title string) *walk.GroupBox {
+	return wm.GroupBox(title, LAYOUT_HORI)
+}
+
+/**
+*	VGroupBox
+**/
+func (wm *WalkUI) VGroupBox(title string) *walk.GroupBox {
+	return wm.GroupBox(title, LAYOUT_VERT)
+}
+
+/**
+*	HBox
+**/
+func (wm *WalkUI) HBox() *walk.GroupBox {
+	return wm.GroupBox("", LAYOUT_HORI)
+}
+
+/**
+*	VBox
+**/
+func (wm *WalkUI) VBox() *walk.GroupBox {
+	return wm.GroupBox("", LAYOUT_VERT)
 }
 
 /**
