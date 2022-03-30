@@ -8,6 +8,7 @@ type AlignType int8
 const (
 	LAYOUT_VERT LayoutType = 0 // Vertical
 	LAYOUT_HORI            = 1 // Horizontal
+	LAYOUT_FLOW            = 2
 )
 
 const (

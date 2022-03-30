@@ -52,6 +52,8 @@ func NewWin(title string, width int, height int, lt ...LayoutType) *WalkUI {
 			wm.window.SetLayout(walk.NewVBoxLayout())
 		case LAYOUT_HORI:
 			wm.window.SetLayout(walk.NewHBoxLayout())
+		case LAYOUT_FLOW:
+			wm.window.SetLayout(walk.NewFlowLayout())
 		default:
 			wm.window.SetLayout(walk.NewVBoxLayout())
 		}
