@@ -413,96 +413,6 @@ func (wm *WalkUI) Parent() walk.Container {
 }
 
 /**
-*	HSplit
-**/
-func (wm *WalkUI) HSplit() *walk.Splitter {
-	return wm.Split(LAYOUT_HORI)
-}
-
-/**
-*	VSplit
-**/
-func (wm *WalkUI) VSplit() *walk.Splitter {
-	return wm.Split(LAYOUT_VERT)
-}
-
-/**
-*	Split
-**/
-func (wm *WalkUI) Split(lt ...LayoutType) *walk.Splitter {
-	var hs *walk.Splitter
-
-	if len(lt) == 0 {
-		hs, _ = walk.NewHSplitter(wm.Parent())
-	} else {
-		switch lt[0] {
-		case LAYOUT_VERT:
-			hs, _ = walk.NewVSplitter(wm.Parent())
-		case LAYOUT_HORI:
-			hs, _ = walk.NewHSplitter(wm.Parent())
-		default:
-			hs, _ = walk.NewHSplitter(wm.Parent())
-		}
-	}
-	wm.parentList.PushBack(hs)
-	return hs
-}
-
-/**
-*	GroupBox
-**/
-func (wm *WalkUI) GroupBox(title string, lt ...LayoutType) *walk.GroupBox {
-	gb, _ := walk.NewGroupBox(wm.Parent())
-
-	if title != "" {
-		gb.SetTitle(title)
-	}
-
-	if len(lt) == 0 {
-		gb.SetLayout(walk.NewVBoxLayout())
-	} else {
-		switch lt[0] {
-		case LAYOUT_VERT:
-			gb.SetLayout(walk.NewVBoxLayout())
-		case LAYOUT_HORI:
-			gb.SetLayout(walk.NewHBoxLayout())
-		default:
-			gb.SetLayout(walk.NewVBoxLayout())
-		}
-	}
-	wm.parentList.PushBack(gb)
-	return gb
-}
-
-/**
-*	HGroupBox
-**/
-func (wm *WalkUI) HGroupBox(title string) *walk.GroupBox {
-	return wm.GroupBox(title, LAYOUT_HORI)
-}
-
-/**
-*	VGroupBox
-**/
-func (wm *WalkUI) VGroupBox(title string) *walk.GroupBox {
-	return wm.GroupBox(title, LAYOUT_VERT)
-}
-
-/**
-*	HBox
-**/
-func (wm *WalkUI) HBox() *walk.GroupBox {
-	return wm.GroupBox("", LAYOUT_HORI)
-}
-
-/**
-*	VBox
-**/
-func (wm *WalkUI) VBox() *walk.GroupBox {
-	return wm.GroupBox("", LAYOUT_VERT)
-}
-
-/**
 *	End
 **/
 func (wm *WalkUI) End() {
@@ -511,18 +421,4 @@ func (wm *WalkUI) End() {
 		parent := wm.Parent()
 		parent.Children().Add(popData.(walk.Widget))
 	}
-}
-
-/**
-*	EndSplit
-**/
-func (wm *WalkUI) EndSplit() {
-	wm.End()
-}
-
-/**
-*	EndGroupBox
-**/
-func (wm *WalkUI) EndGroupBox() {
-	wm.End()
 }
