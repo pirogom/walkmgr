@@ -1,6 +1,8 @@
 package walkmgr
 
-import "github.com/pirogom/walk"
+import (
+	"github.com/pirogom/walk"
+)
 
 /**
 *	Composite
@@ -9,17 +11,27 @@ func (wm *WalkUI) Composite(lt ...LayoutType) *walk.Composite {
 	cs, _ := walk.NewComposite(wm.Parent())
 
 	if len(lt) == 0 {
-		cs.SetLayout(walk.NewVBoxLayout())
+		ly := walk.NewVBoxLayout()
+		ly.SetMargins(walk.Margins{0, 0, 0, 0})
+		cs.SetLayout(ly)
 	} else {
 		switch lt[0] {
 		case LAYOUT_VERT:
-			cs.SetLayout(walk.NewVBoxLayout())
+			ly := walk.NewVBoxLayout()
+			ly.SetMargins(walk.Margins{0, 0, 0, 0})
+			cs.SetLayout(ly)
 		case LAYOUT_HORI:
-			cs.SetLayout(walk.NewHBoxLayout())
+			ly := walk.NewHBoxLayout()
+			ly.SetMargins(walk.Margins{0, 0, 0, 0})
+			cs.SetLayout(ly)
 		case LAYOUT_FLOW:
-			cs.SetLayout(walk.NewFlowLayout())
+			ly := walk.NewFlowLayout()
+			ly.SetMargins(walk.Margins{0, 0, 0, 0})
+			cs.SetLayout(ly)
 		default:
-			cs.SetLayout(walk.NewVBoxLayout())
+			ly := walk.NewVBoxLayout()
+			ly.SetMargins(walk.Margins{0, 0, 0, 0})
+			cs.SetLayout(ly)
 		}
 	}
 	wm.parentList.PushBack(cs)
