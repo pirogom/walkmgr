@@ -3,6 +3,8 @@ for easy window native gui programming on go. enhanced [pirogom/walk](https://gi
 
 under construction.
 
+[walkmgr example code](https://github.com/pirogom/walkmgr_example)
+
 Application Manifest Files
 ==========================
 Walk requires Common Controls 6. This means that you must put an appropriate
