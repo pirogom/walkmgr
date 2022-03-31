@@ -22,15 +22,14 @@ type WalkUI struct {
 }
 
 /**
-*	NewWin
+*	CreateWindow
 **/
-func NewWin(title string, width int, height int, lt ...LayoutType) *WalkUI {
+func CreateWindow(title string, posX, posY int, width, height int, lt ...LayoutType) *WalkUI {
 	wm := WalkUI{}
 
 	// set config
 	cfg := walk.MainWindowCfg{}
 	cfg.Name = defaultWinName
-	posX, posY := wm.CenterPos(width, height)
 	cfg.Bounds.SetLocation(walk.Point{X: posX, Y: posY})
 	cfg.Bounds.SetSize(walk.Size{Width: width, Height: height})
 
@@ -93,6 +92,15 @@ func NewWin(title string, width int, height int, lt ...LayoutType) *WalkUI {
 }
 
 /**
+*	NewWin
+**/
+func NewWin(title string, width int, height int, lt ...LayoutType) *WalkUI {
+	x, y := CenterPos(width, height)
+
+	return CreateWindow(title, x, y, width, height, lt...)
+}
+
+/**
 *	NewFixed
 **/
 func NewFixed(title string, width int, height int, lt ...LayoutType) *WalkUI {
@@ -110,7 +118,7 @@ func NewAds(title string, width int, height int) *WalkUI {
 	// set config
 	cfg := walk.MainWindowCfg{}
 	cfg.Name = defaultWinName
-	posX, posY := wm.AdsPos(width, height)
+	posX, posY := AdsPos(width, height)
 	cfg.Bounds.SetLocation(walk.Point{X: posX, Y: posY})
 	cfg.Bounds.SetSize(walk.Size{Width: width, Height: height})
 
@@ -162,6 +170,23 @@ func NewAds(title string, width int, height int) *WalkUI {
 }
 
 /**
+*	WindowPos
+**/
+func (wm *WalkUI) WindowPos() (int, int, int, int) {
+	var rtWindow win.RECT
+
+	win.GetWindowRect(wm.GetHWND(), &rtWindow)
+
+	width := int(rtWindow.Right - rtWindow.Left)
+	height := int(rtWindow.Bottom - rtWindow.Top)
+
+	x := int(rtWindow.Left)
+	y := int(rtWindow.Top)
+
+	return x, y, width, height
+}
+
+/**
 *	MoveAds
 **/
 func (wm *WalkUI) MoveAds() {
@@ -196,34 +221,6 @@ func (wm *WalkUI) MoveCenter() {
 
 	win.MoveWindow(wm.GetHWND(), x, y, width, height, true)
 	//
-}
-
-/**
-*	CenterPos
-**/
-func (wm *WalkUI) CenterPos(width int, height int) (int, int) {
-	var x, y int
-	var rtDesk win.RECT
-	win.GetWindowRect(win.GetDesktopWindow(), &rtDesk)
-
-	x = (int(rtDesk.Right) - width) / 2
-	y = (int(rtDesk.Bottom) - height) / 2
-
-	return x, y
-}
-
-/**
-*	AdsPos
-**/
-func (wm *WalkUI) AdsPos(width int, height int) (int, int) {
-	var x, y int
-	var rtDesk win.RECT
-	win.GetWindowRect(win.GetDesktopWindow(), &rtDesk)
-
-	x = int(rtDesk.Right) - width
-	y = int(rtDesk.Bottom) - (height + 40)
-
-	return x, y
 }
 
 /**
