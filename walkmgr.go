@@ -68,6 +68,7 @@ func NewWin(title string, width int, height int, lt ...LayoutType) *WalkUI {
 
 	// windows start
 	wm.window.Starting().Attach(func() {
+		wm.MoveCenter()
 		if wm.startingFunc != nil {
 			wm.startingFunc()
 		}
@@ -136,6 +137,7 @@ func NewAds(title string, width int, height int) *WalkUI {
 
 	// starting
 	wm.window.Starting().Attach(func() {
+		wm.MoveAds()
 		if wm.startingFunc != nil {
 			wm.startingFunc()
 		}
@@ -157,6 +159,43 @@ func NewAds(title string, width int, height int) *WalkUI {
 	})
 
 	return &wm
+}
+
+/**
+*	MoveAds
+**/
+func (wm *WalkUI) MoveAds() {
+	var x, y, width, height int32
+	var rtDesk, rtWindow win.RECT
+	win.GetWindowRect(win.GetDesktopWindow(), &rtDesk)
+	win.GetWindowRect(wm.GetHWND(), &rtWindow)
+
+	width = rtWindow.Right - rtWindow.Left
+	height = rtWindow.Bottom - rtWindow.Top
+
+	x = rtDesk.Right - width
+	y = rtDesk.Bottom - (height + 40)
+
+	win.MoveWindow(wm.GetHWND(), x, y, width, height, true)
+}
+
+/**
+*	MoveCenter
+**/
+func (wm *WalkUI) MoveCenter() {
+	//
+	var x, y, width, height int32
+	var rtDesk, rtWindow win.RECT
+	win.GetWindowRect(win.GetDesktopWindow(), &rtDesk)
+	win.GetWindowRect(wm.GetHWND(), &rtWindow)
+
+	width = rtWindow.Right - rtWindow.Left
+	height = rtWindow.Bottom - rtWindow.Top
+	x = (rtDesk.Right - width) / 2
+	y = (rtDesk.Bottom - height) / 2
+
+	win.MoveWindow(wm.GetHWND(), x, y, width, height, true)
+	//
 }
 
 /**
