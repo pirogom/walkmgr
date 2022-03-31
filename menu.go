@@ -19,6 +19,18 @@ func NewMenu(text string) *MenuMgr {
 }
 
 /**
+*	NewActionMenu
+**/
+func NewActionMenu(text string, trigerFunc func()) *MenuMgr {
+	m := MenuMgr{}
+	m.Menu, _ = walk.NewMenu()
+	m.MenuAct = walk.NewMenuAction(m.Menu)
+	m.MenuAct.Triggered().Attach(trigerFunc)
+	m.MenuAct.SetText(text)
+	return &m
+}
+
+/**
 *	AddAction
 **/
 func (m *MenuMgr) AddAction(text string, trigerFunc func()) *walk.Action {
