@@ -422,3 +422,10 @@ func (wm *WalkUI) End() {
 		parent.Children().Add(popData.(walk.Widget))
 	}
 }
+
+/**
+*	AddMenu
+**/
+func (wm *WalkUI) AddMenu(in *MenuMgr) {
+	wm.window.Menu().Actions().Add(in.MenuAct)
+}
