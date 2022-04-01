@@ -209,7 +209,6 @@ func (wm *WalkUI) WindowPos() (int, int, int, int) {
 **/
 func CenterPos(width int, height int) (int, int) {
 	if UseWalkPositionMgr() && walk.PosMgr.HasPosition() {
-
 		pmX, pmY, pmW, pmH, _, deskH := walk.PosMgr.Get()
 
 		var rX, rY int
@@ -237,7 +236,6 @@ func CenterPos(width int, height int) (int, int) {
 		} else if rY+height > deskH {
 			rY = deskH - height
 		}
-
 		return rX, rY
 	}
 	var x, y int
@@ -268,39 +266,30 @@ func AdsPos(width int, height int) (int, int) {
 *	MoveAds
 **/
 func (wm *WalkUI) MoveAds() {
-	var x, y, width, height int32
-	var rtDesk, rtWindow win.RECT
-	win.GetWindowRect(win.GetDesktopWindow(), &rtDesk)
+	var rtWindow win.RECT
 	win.GetWindowRect(wm.GetHWND(), &rtWindow)
 
-	width = rtWindow.Right - rtWindow.Left
-	height = rtWindow.Bottom - rtWindow.Top
+	width := rtWindow.Right - rtWindow.Left
+	height := rtWindow.Bottom - rtWindow.Top
 
-	x = rtDesk.Right - width
-	y = rtDesk.Bottom - (height + 40)
+	x, y := AdsPos(int(width), int(height))
 
-	win.MoveWindow(wm.GetHWND(), x, y, width, height, true)
+	win.MoveWindow(wm.GetHWND(), int32(x), int32(y), width, height, true)
 }
 
 /**
 *	MoveCenter
 **/
 func (wm *WalkUI) MoveCenter() {
-	if UseWalkPositionMgr() && walk.PosMgr.HasPosition() {
-		return
-	}
-	//
-	var x, y, width, height int32
-	var rtDesk, rtWindow win.RECT
-	win.GetWindowRect(win.GetDesktopWindow(), &rtDesk)
+	var rtWindow win.RECT
 	win.GetWindowRect(wm.GetHWND(), &rtWindow)
 
-	width = rtWindow.Right - rtWindow.Left
-	height = rtWindow.Bottom - rtWindow.Top
-	x = (rtDesk.Right - width) / 2
-	y = (rtDesk.Bottom - height) / 2
+	width := rtWindow.Right - rtWindow.Left
+	height := rtWindow.Bottom - rtWindow.Top
 
-	win.MoveWindow(wm.GetHWND(), x, y, width, height, true)
+	x, y := CenterPos(int(width), int(height))
+
+	win.MoveWindow(wm.GetHWND(), int32(x), int32(y), width, height, true)
 	//
 }
 
