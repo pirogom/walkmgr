@@ -92,31 +92,3 @@ func MultiLineText(text string, limit int) string {
 	}
 	return res
 }
-
-/**
-*	CenterPos
-**/
-func CenterPos(width int, height int) (int, int) {
-	var x, y int
-	var rtDesk win.RECT
-	win.GetWindowRect(win.GetDesktopWindow(), &rtDesk)
-
-	x = (int(rtDesk.Right) - width) / 2
-	y = (int(rtDesk.Bottom) - height) / 2
-
-	return x, y
-}
-
-/**
-*	AdsPos
-**/
-func AdsPos(width int, height int) (int, int) {
-	var x, y int
-	var rtDesk win.RECT
-	win.GetWindowRect(win.GetDesktopWindow(), &rtDesk)
-
-	x = int(rtDesk.Right) - width
-	y = int(rtDesk.Bottom) - (height + 40)
-
-	return x, y
-}

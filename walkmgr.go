@@ -10,6 +10,10 @@ import (
 type WinCloseFunc func() bool
 type WinStartFunc func()
 
+var (
+	useWalkPositionMgr bool
+)
+
 /**
 *	WalkUI
 **/
@@ -19,6 +23,20 @@ type WalkUI struct {
 	IsIgnoreClose bool
 	startingFunc  WinStartFunc
 	closingFunc   WinCloseFunc
+}
+
+/**
+*	SetUseWalkPositionMgr
+**/
+func SetUseWalkPositionMgr() {
+	useWalkPositionMgr = true
+}
+
+/**
+*	UseWalkPositionMgr
+**/
+func UseWalkPositionMgr() bool {
+	return useWalkPositionMgr
 }
 
 /**
@@ -187,6 +205,66 @@ func (wm *WalkUI) WindowPos() (int, int, int, int) {
 }
 
 /**
+*	CenterPos
+**/
+func CenterPos(width int, height int) (int, int) {
+	if UseWalkPositionMgr() && walk.PosMgr.HasPosition() {
+
+		pmX, pmY, pmW, pmH, _, deskH := walk.PosMgr.Get()
+
+		var rX, rY int
+
+		if pmW > width {
+			rX = pmX + ((pmW - width) / 2)
+		} else if pmW < width {
+			rX = pmX - ((width - pmW) / 2)
+		} else {
+			rX = pmX
+		}
+		if pmH > height {
+			rY = pmY + ((pmH - height) / 2)
+		} else if pmH < height {
+			rY = pmY - ((height - pmH) / 2)
+		} else {
+			rY = pmY
+		}
+
+		if rX < 0 {
+			rX = 0
+		}
+		if rY < 0 {
+			rY = 0
+		} else if rY+height > deskH {
+			rY = deskH - height
+		}
+
+		return rX, rY
+	}
+	var x, y int
+	var rtDesk win.RECT
+	win.GetWindowRect(win.GetDesktopWindow(), &rtDesk)
+
+	x = (int(rtDesk.Right) - width) / 2
+	y = (int(rtDesk.Bottom) - height) / 2
+
+	return x, y
+}
+
+/**
+*	AdsPos
+**/
+func AdsPos(width int, height int) (int, int) {
+	var x, y int
+	var rtDesk win.RECT
+	win.GetWindowRect(win.GetDesktopWindow(), &rtDesk)
+
+	x = int(rtDesk.Right) - width
+	y = int(rtDesk.Bottom) - (height + 40)
+
+	return x, y
+}
+
+/**
 *	MoveAds
 **/
 func (wm *WalkUI) MoveAds() {
@@ -208,6 +286,9 @@ func (wm *WalkUI) MoveAds() {
 *	MoveCenter
 **/
 func (wm *WalkUI) MoveCenter() {
+	if UseWalkPositionMgr() && walk.PosMgr.HasPosition() {
+		return
+	}
 	//
 	var x, y, width, height int32
 	var rtDesk, rtWindow win.RECT
