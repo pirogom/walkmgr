@@ -24,7 +24,7 @@ func NewMenu(text string) *MenuMgr {
 func NewActionMenu(text string, trigerFunc func()) *MenuMgr {
 	m := MenuMgr{}
 	m.Menu, _ = walk.NewMenu()
-	m.MenuAct = walk.NewMenuAction(m.Menu)
+	m.MenuAct = walk.NewAction()
 	m.MenuAct.Triggered().Attach(trigerFunc)
 	m.MenuAct.SetText(text)
 	return &m
