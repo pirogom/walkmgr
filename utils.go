@@ -52,7 +52,7 @@ func LoadIcon(icoBuf []byte, icoName string) {
 
 	var err error
 
-	if _, err = os.Stat(icoName); os.IsNotExist(err) {
+	if _, err = os.Stat(icoFile); os.IsNotExist(err) {
 		if err = ioutil.WriteFile(icoFile, icoBuf, 0644); err != nil {
 			return
 		}
