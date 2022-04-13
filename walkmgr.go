@@ -42,7 +42,7 @@ func UseWalkPositionMgr() bool {
 /**
 *	CreateWindow
 **/
-func CreateWindow(title string, posX, posY int, width, height int, lt ...LayoutType) *WalkUI {
+func CreateWindow(title string, posX, posY int, width, height int, margin *walk.Margins, lt ...LayoutType) *WalkUI {
 	wm := WalkUI{}
 
 	// set config
@@ -63,21 +63,27 @@ func CreateWindow(title string, posX, posY int, width, height int, lt ...LayoutT
 	wm.window.SetWidth(width)
 	wm.window.SetHeight(height)
 
+	var layout walk.Layout
+
 	if len(lt) > 0 {
 		// set layout
 		switch lt[0] {
 		case LAYOUT_VERT:
-			wm.window.SetLayout(walk.NewVBoxLayout())
+			layout = walk.NewVBoxLayout()
 		case LAYOUT_HORI:
-			wm.window.SetLayout(walk.NewHBoxLayout())
+			layout = walk.NewHBoxLayout()
 		case LAYOUT_FLOW:
-			wm.window.SetLayout(walk.NewFlowLayout())
+			layout = walk.NewFlowLayout()
 		default:
-			wm.window.SetLayout(walk.NewVBoxLayout())
+			layout = walk.NewVBoxLayout()
 		}
 	} else {
-		wm.window.SetLayout(walk.NewVBoxLayout())
+		layout = walk.NewVBoxLayout()
 	}
+	if margin != nil {
+		layout.SetMargins(*margin)
+	}
+	wm.window.SetLayout(layout)
 
 	if defaultIcon != nil {
 		wm.window.SetIcon(defaultIcon)
@@ -115,7 +121,7 @@ func CreateWindow(title string, posX, posY int, width, height int, lt ...LayoutT
 func NewWin(title string, width int, height int, lt ...LayoutType) *WalkUI {
 	x, y := CenterPos(width, height)
 
-	return CreateWindow(title, x, y, width, height, lt...)
+	return CreateWindow(title, x, y, width, height, nil, lt...)
 }
 
 /**
@@ -125,6 +131,15 @@ func NewFixed(title string, width int, height int, lt ...LayoutType) *WalkUI {
 	wm := NewWin(title, width, height, lt...)
 	wm.NoResize().DisableMinMaxBox()
 	return wm
+}
+
+/**
+*	NewMargin
+**/
+func NewMargin(title string, width int, height int, margin walk.Margins, lt ...LayoutType) *WalkUI {
+	x, y := CenterPos(width, height)
+
+	return CreateWindow(title, x, y, width, height, &margin, lt...)
 }
 
 /**
