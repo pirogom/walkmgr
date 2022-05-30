@@ -7,8 +7,19 @@ import "github.com/pirogom/walk"
 **/
 func (wm *WalkUI) WebView(url string) *walk.WebView {
 	wv, _ := walk.NewWebView(wm.Parent())
-	wv.SetURL(url)
 	wv.SetSilent()
+	wv.SetURL(url)
+	wm.Append(wv)
+	return wv
+}
+
+/**
+*	WebViewWithAgent
+**/
+func (wm *WalkUI) WebViewWithAgent(url string, agent string) *walk.WebView {
+	wv, _ := walk.NewWebView(wm.Parent())
+	wv.SetSilent()
+	wv.SetURLWithAgent(url, agent)
 	wm.Append(wv)
 	return wv
 }
