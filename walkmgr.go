@@ -160,6 +160,9 @@ func NewAds(title string, width int, height int) *WalkUI {
 	if winErr != nil {
 		panic("create window failed. please check manifest and .syso")
 	}
+
+	window.DisablePositionMgr()
+
 	wm.window = window
 	wm.parentList = list.New()
 
