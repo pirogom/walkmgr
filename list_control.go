@@ -304,3 +304,49 @@ func (t *ListControl) SelectedItem() *ListControlItem {
 func (t *ListControl) SelectedItemIndex() int {
 	return t.tv.CurrentIndex()
 }
+
+/**
+*	AllSelectedItem
+**/
+func (t *ListControl) AllSelectedItem() []ListControlItem {
+	li := []ListControlItem{}
+	idxs := t.tv.SelectedIndexes()
+	for _, idx := range idxs {
+		li = append(li, t.cbModel.items[idx])
+	}
+	return li
+}
+
+/**
+*	AllSelectedItemIndex
+**/
+func (t *ListControl) AllSelectedItemIndex() []int {
+	return t.tv.SelectedIndexes()
+}
+
+/**
+*	SelectedItemCount
+**/
+func (t *ListControl) SelectedItemCount() int {
+	return len(t.tv.SelectedIndexes())
+}
+
+/**
+*	CheckedAll
+**/
+func (t *ListControl) CheckedAll(checked bool) {
+	if !t.tv.CheckBoxes() {
+		return
+	}
+	for itemIdx, _ := range t.cbModel.items {
+		t.Checked(itemIdx, checked)
+	}
+}
+
+/**
+*	Checked
+**/
+func (t *ListControl) Checked(idx int, checked bool) {
+	t.cbModel.SetChecked(idx, checked)
+	t.cbModel.PublishRowChanged(idx)
+}
