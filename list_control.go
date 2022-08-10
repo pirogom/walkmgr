@@ -6,6 +6,10 @@ import (
 	"github.com/pirogom/walk"
 )
 
+type ItemDoubleClickedFunc func(idx int)
+type CurrentIndexChangedFunc func(idx int)
+type KeyDownFunc func(key walk.Key)
+
 /**
 *	ListControlItem
 **/
@@ -113,6 +117,10 @@ type ListControl struct {
 	wm      *WalkUI
 	th      []ListControlColumn
 	cfg     ListControlCfg
+
+	itemDblClickedProc ItemDoubleClickedFunc
+	itemChangedProc    CurrentIndexChangedFunc
+	keyDownProc        KeyDownFunc
 }
 
 /**
@@ -170,6 +178,87 @@ func (t *ListControl) Create() {
 **/
 func (t *ListControl) registEvent() {
 	t.tv.ColumnClicked().Attach(t.columnOrderingEvent)
+	t.tv.ItemActivated().Attach(t.itemDblClickedEvent)
+	t.tv.MouseWheel().Attach(t.mouseWheelEvent)
+	t.tv.CurrentIndexChanged().Attach(t.currItemIndexChangedEvent)
+	t.tv.KeyDown().Attach(t.keydownEvnet)
+}
+
+/**
+*	keydownEvnet
+**/
+func (t *ListControl) keydownEvnet(key walk.Key) {
+	defer func() {
+		if t.keyDownProc != nil {
+			t.keyDownProc(key)
+		}
+	}()
+
+	if key == walk.KeySpace {
+		currIdx := t.tv.CurrentIndex()
+		if currIdx > -1 {
+			selectItem := t.tv.SelectedIndexes()
+
+			if len(selectItem) == 0 {
+				return
+			}
+
+			checked := t.cbModel.items[currIdx].checked
+
+			for _, itemVal := range selectItem {
+
+				if itemVal != currIdx {
+					t.cbModel.items[itemVal].checked = checked
+					t.tv.UpdateItem(itemVal)
+				}
+			}
+		}
+	}
+}
+
+/**
+*	currItemIndexChangedEvent
+**/
+func (t *ListControl) currItemIndexChangedEvent() {
+	nCurrIten := t.tv.CurrentIndex()
+
+	if nCurrIten > -1 && t.itemChangedProc != nil {
+		t.itemChangedProc(nCurrIten)
+	}
+}
+
+/**
+*	mouseWheelEvent
+**/
+func (t *ListControl) mouseWheelEvent(x, y int, button walk.MouseButton) {
+	wDelta := walk.MouseWheelEventDelta(button)
+
+	if wDelta > 0 {
+		t.CurrentIndexUp()
+	} else {
+		t.CurrentIndexDown()
+	}
+}
+
+/**
+*	itemDblClickedEvent
+**/
+func (t *ListControl) itemDblClickedEvent() {
+	nCurrItem := t.tv.CurrentIndex()
+
+	if t.tv.CheckBoxes() {
+		if nCurrItem > -1 {
+			if t.cbModel.items[nCurrItem].checked {
+				t.cbModel.items[nCurrItem].checked = false
+			} else {
+				t.cbModel.items[nCurrItem].checked = true
+			}
+			t.cbModel.PublishRowChanged(nCurrItem)
+		}
+	}
+	if nCurrItem > -1 && t.itemDblClickedProc != nil {
+		t.itemDblClickedProc(nCurrItem)
+	}
 }
 
 /**
@@ -349,4 +438,78 @@ func (t *ListControl) CheckedAll(checked bool) {
 func (t *ListControl) Checked(idx int, checked bool) {
 	t.cbModel.SetChecked(idx, checked)
 	t.cbModel.PublishRowChanged(idx)
+}
+
+/**
+*	ItemDoubleClicked
+**/
+func (t *ListControl) ItemDoubleClicked(afterFunc ItemDoubleClickedFunc) {
+	t.itemDblClickedProc = afterFunc
+}
+
+/**
+*	CurrIndexChanged
+**/
+func (t *ListControl) CurrIndexChanged(afterFunc CurrentIndexChangedFunc) {
+	t.itemChangedProc = afterFunc
+}
+
+/**
+*	KeyDown
+**/
+func (t *ListControl) KeyDown(afterFunc KeyDownFunc) {
+	t.keyDownProc = afterFunc
+}
+
+/**
+*	CurrentIndexUp
+**/
+func (t *ListControl) CurrentIndexUp() {
+	if t.cbModel.RowCount() == 0 {
+		return
+	}
+	idx := t.tv.CurrentIndex()
+
+	if idx == 0 {
+		return
+	} else if idx == -1 {
+		t.tv.SetCurrentIndex(0)
+	} else {
+		t.tv.SetCurrentIndex(idx - 1)
+	}
+}
+
+/**
+*	CurrentIndexDown
+**/
+func (t *ListControl) CurrentIndexDown() {
+	if t.cbModel.RowCount() == 0 {
+		return
+	}
+	idx := t.tv.CurrentIndex()
+	if idx+1 >= t.cbModel.RowCount() {
+		return
+	} else {
+		t.tv.SetCurrentIndex(idx + 1)
+	}
+}
+
+/**
+*	CurrentItemChecked
+**/
+func (t *ListControl) CurrentItemCheck() (int, bool) {
+	if !t.tv.CheckBoxes() {
+		return -1, false
+	}
+	idx := t.tv.CurrentIndex()
+	if idx > -1 {
+		if t.cbModel.items[idx].checked {
+			t.cbModel.items[idx].checked = false
+		} else {
+			t.cbModel.items[idx].checked = true
+		}
+		t.cbModel.PublishRowChanged(idx)
+		return idx, t.cbModel.items[idx].checked
+	}
+	return -1, false
 }
