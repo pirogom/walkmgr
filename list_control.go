@@ -1,6 +1,10 @@
 package walkmgr
 
-import "github.com/pirogom/walk"
+import (
+	"sort"
+
+	"github.com/pirogom/walk"
+)
 
 /**
 *	ListControlItem
@@ -75,58 +79,129 @@ func (m *ListControlModel) ResetRows() {
 	m.PublishRowsReset()
 }
 
-type lcCheckOpt bool
-type lcSelectOpt bool
+type ListControlCfg struct {
+	CheckBox    bool
+	MultiSelect bool
+}
+
+type ListCtrlAlign int32
+type ListCtrlOrderState bool
 
 const (
-	LISTCONTROL_NO_CHECKBOX     lcCheckOpt  = false
-	LISTCONTROL_CHECKBOX        lcCheckOpt  = true
-	LISTCONTROL_NO_MULTI_SELECT lcSelectOpt = false
-	LISTCONTROL_MULTI_SELECT    lcSelectOpt = true
+	LISTCTRL_ALIGN_RIGHT  ListCtrlAlign = 0
+	LISTCTRL_ALIGN_LEFT   ListCtrlAlign = 1
+	LISTCTRL_ALIGN_CENTER ListCtrlAlign = 2
+
+	LS_ORDER_ASC  ListCtrlOrderState = false
+	LS_ORDER_DESC ListCtrlOrderState = true
 )
+
+type ListControlColumn struct {
+	Title      string
+	Width      int
+	Align      ListCtrlAlign
+	Order      bool
+	orderState ListCtrlOrderState
+}
 
 /**
 *	ListControl
 **/
 type ListControl struct {
-	cbModel        *ListControlModel
-	tv             *walk.TableView
-	wm             *WalkUI
-	th             TableHeader
-	hasCheckbox    lcCheckOpt
-	useMultiSelect lcSelectOpt
+	cbModel *ListControlModel
+	tv      *walk.TableView
+	wm      *WalkUI
+	th      []ListControlColumn
+	cfg     ListControlCfg
 }
 
 /**
 *	NewListControl
 **/
-func NewListControl(wm *WalkUI, checkbox lcCheckOpt, multiselect lcSelectOpt) *ListControl {
+func NewListControl(wm *WalkUI, cfg *ListControlCfg) *ListControl {
 	nd := ListControl{}
 	nd.cbModel = new(ListControlModel)
 	nd.wm = wm
-	nd.hasCheckbox = checkbox
-	nd.useMultiSelect = multiselect
+	if cfg != nil {
+		nd.cfg = *cfg
+	}
 	return &nd
 }
 
 /**
 *	AddColumn
 **/
-func (t *ListControl) AddColumn(title string, width int, align ...string) {
-	var av string
-	if len(align) > 0 {
-		av = align[0]
-	} else {
-		av = "left"
-	}
-	t.th.Header = append(t.th.Header, TvHeader{Title: title, Width: width, Align: av})
+func (t *ListControl) AddColumn(title string, width int, align ListCtrlAlign, order bool) {
+	od := ListControlColumn{Title: title, Width: width, Align: align, Order: order}
+	t.th = append(t.th, od)
 }
 
 /**
 *	Create
 **/
 func (t *ListControl) Create() {
-	t.tv = t.wm.TableView(t.cbModel, t.th.Get(), bool(t.hasCheckbox), bool(t.useMultiSelect))
+	t.tv, _ = walk.NewTableView(t.wm.Parent())
+	t.tv.SetCheckBoxes(t.cfg.CheckBox)
+	t.tv.SetMultiSelection(t.cfg.MultiSelect)
+	t.tv.SetModel(t.cbModel)
+
+	for i := 0; i < len(t.th); i++ {
+		col := walk.NewTableViewColumn()
+		col.SetTitle(t.th[i].Title)
+		col.SetWidth(t.th[i].Width)
+
+		switch t.th[i].Align {
+		case LISTCTRL_ALIGN_CENTER:
+			col.SetAlignment(walk.AlignCenter)
+		case LISTCTRL_ALIGN_RIGHT:
+			col.SetAlignment(walk.AlignFar)
+		case LISTCTRL_ALIGN_LEFT:
+			col.SetAlignment(walk.AlignNear)
+		}
+		t.tv.Columns().Add(col)
+	}
+	t.wm.Append(t.tv)
+
+	t.registEvent()
+}
+
+/**
+*	registEvent
+**/
+func (t *ListControl) registEvent() {
+	t.tv.ColumnClicked().Attach(t.columnOrderingEvent)
+}
+
+/**
+*	columnOrderingEvent
+**/
+func (t *ListControl) columnOrderingEvent(col int) {
+	if t.th[col].orderState == LS_ORDER_ASC {
+		t.th[col].orderState = LS_ORDER_DESC
+	} else {
+		t.th[col].orderState = LS_ORDER_ASC
+	}
+
+	keys := []string{}
+	sortMap := make(map[string]ListControlItem)
+
+	for _, item := range t.cbModel.items {
+		keys = append(keys, item.values[col])
+		sortMap[item.values[col]] = item
+	}
+
+	if t.th[col].orderState == LS_ORDER_ASC {
+		sort.Strings(keys)
+	} else {
+		sort.Sort(sort.Reverse(sort.StringSlice(keys)))
+	}
+
+	t.cbModel.ResetRows()
+
+	for _, k := range keys {
+		t.cbModel.items = append(t.cbModel.items, sortMap[k])
+	}
+	t.cbModel.PublishRowsReset()
 }
 
 /**
@@ -204,10 +279,28 @@ func (t *ListControl) DeleteItem(row int) {
 **/
 func (t *ListControl) AddItemData(value string) int {
 	ni := ListControlItem{}
-	ni.values = make([]string, len(t.th.Header))
+	ni.values = make([]string, len(t.th))
 	ni.values[0] = value
 	rowCnt := t.cbModel.RowCount()
 	t.cbModel.items = append(t.cbModel.items, ni)
 	t.cbModel.PublishRowsInserted(rowCnt, rowCnt)
 	return rowCnt
+}
+
+/**
+*	ListControl
+**/
+func (t *ListControl) SelectedItem() *ListControlItem {
+	idx := t.tv.CurrentIndex()
+	if idx == -1 {
+		return nil
+	}
+	return &t.cbModel.items[idx]
+}
+
+/**
+*	SelectedItemIndex
+**/
+func (t *ListControl) SelectedItemIndex() int {
+	return t.tv.CurrentIndex()
 }
