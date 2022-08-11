@@ -441,6 +441,31 @@ func (t *ListControl) Checked(idx int, checked bool) {
 }
 
 /**
+*	CheckedCount
+**/
+func (t *ListControl) CheckedCount() int {
+	if !t.tv.CheckBoxes() {
+		return 0
+	}
+	return t.cbModel.CheckedCount()
+}
+
+/**
+*	CheckedIndexs
+**/
+func (t *ListControl) CheckedIndexs() []int {
+	ci := []int{}
+
+	for i := range t.cbModel.items {
+		if t.cbModel.items[i].checked {
+			ci = append(ci, i)
+		}
+	}
+
+	return ci
+}
+
+/**
 *	ItemDoubleClicked
 **/
 func (t *ListControl) ItemDoubleClicked(afterFunc ItemDoubleClickedFunc) {
