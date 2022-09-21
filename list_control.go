@@ -265,6 +265,10 @@ func (t *ListControl) itemDblClickedEvent() {
 *	columnOrderingEvent
 **/
 func (t *ListControl) columnOrderingEvent(col int) {
+	if !t.th[col].Order {
+		return
+	}
+
 	if t.th[col].orderState == LS_ORDER_ASC {
 		t.th[col].orderState = LS_ORDER_DESC
 	} else {
