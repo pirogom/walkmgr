@@ -265,6 +265,7 @@ func (t *ListControl) itemDblClickedEvent() {
 *	columnOrderingEvent
 **/
 func (t *ListControl) columnOrderingEvent(col int) {
+	// 소팅 옵션 없으면 리턴
 	if !t.th[col].Order {
 		return
 	}
