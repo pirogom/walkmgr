@@ -194,7 +194,7 @@ func (t *ListControl) keydownEvnet(key walk.Key) {
 		}
 	}()
 
-	if key == walk.KeySpace {
+	if t.tv.CheckBoxes() && key == walk.KeySpace {
 		currIdx := t.tv.CurrentIndex()
 		if currIdx > -1 {
 			selectItem := t.tv.SelectedIndexes()
