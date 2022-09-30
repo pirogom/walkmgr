@@ -1,6 +1,7 @@
 package walkmgr
 
 import (
+	"fmt"
 	"sort"
 
 	"github.com/pirogom/walk"
@@ -279,9 +280,16 @@ func (t *ListControl) columnOrderingEvent(col int) {
 	keys := []string{}
 	sortMap := make(map[string]ListControlItem)
 
-	for _, item := range t.cbModel.items {
-		keys = append(keys, item.values[col])
-		sortMap[item.values[col]] = item
+	for itemIdx, item := range t.cbModel.items {
+
+		keyName := item.values[col]
+
+		if _, kexist := sortMap[keyName]; kexist {
+			keyName = fmt.Sprintf("%s_%d", item.values[col], itemIdx)
+		}
+
+		keys = append(keys, keyName)
+		sortMap[keyName] = item
 	}
 
 	if t.th[col].orderState == LS_ORDER_ASC {
