@@ -137,6 +137,14 @@ func NewListControl(wm *WalkUI, cfg *ListControlCfg) *ListControl {
 	return &nd
 }
 
+func (t *ListControl) FixHeight(height int) error {
+	return t.tv.FixHeight(height)
+}
+
+func (t *ListControl) FixWidth(width int) error {
+	return t.tv.FixWidth(width)
+}
+
 /**
 *	AddColumn
 **/
