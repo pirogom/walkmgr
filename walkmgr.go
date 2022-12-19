@@ -23,6 +23,7 @@ type WalkUI struct {
 	IsIgnoreClose bool
 	startingFunc  WinStartFunc
 	closingFunc   WinCloseFunc
+	tb            *walk.ToolBar
 }
 
 /**
