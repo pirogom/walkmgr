@@ -8,11 +8,9 @@ import (
 *	TreeView
 **/
 type TreeView struct {
-	wm           *WalkUI
-	tv           *walk.TreeView
-	tm           *TreeModel
-	parentIcon   *walk.Icon
-	childrenIcon *walk.Icon
+	wm *WalkUI
+	tv *walk.TreeView
+	tm *TreeModel
 }
 
 /**
@@ -26,19 +24,14 @@ type TreeViewItem struct {
 }
 
 /**
-*	AddChildren
+*	AddItem
 **/
-func (d *TreeViewItem) AddChildren(name string, icon *walk.Icon) *TreeViewItem {
+func (d *TreeViewItem) AddItem(name string, icon *walk.Icon) *TreeViewItem {
 	nd := new(TreeViewItem)
 	nd.name = name
-	// if icon == nil {
-	// 	if t.childrenIcon != nil {
-	// 		nd.icon = t.childrenIcon
-	// 	}
-	// } else {
-	// 	nd.icon = icon
-	// }
-	nd.icon = nil
+	if icon != nil {
+		nd.icon = icon
+	}
 	nd.parent = d
 	d.children = append(d.children, nd)
 	return nd
@@ -129,18 +122,14 @@ func (m *TreeModel) RootAt(index int) walk.TreeItem {
 /**
 *	NewTreeView
 **/
-func (wm *WalkUI) NewTreeView(parentIconPath string, childrenIconPath string) *TreeView {
+func (wm *WalkUI) NewTreeView() *TreeView {
 	nd := TreeView{}
 
 	nd.tv, _ = walk.NewTreeView(wm.Parent())
 	nd.wm = wm
 	nd.tm = new(TreeModel)
-	if parentIconPath != "" {
-		nd.parentIcon, _ = walk.NewIconFromFile(parentIconPath)
-	}
-	if childrenIconPath != "" {
-		nd.childrenIcon, _ = walk.NewIconFromFile(childrenIconPath)
-	}
+	nd.tv.SetModel(nd.tm)
+	nd.wm.Append(nd.tv)
 	return &nd
 }
 
@@ -150,21 +139,16 @@ func (wm *WalkUI) NewTreeView(parentIconPath string, childrenIconPath string) *T
 func (t *TreeView) AddItem(name string, icon *walk.Icon) *TreeViewItem {
 	nd := new(TreeViewItem)
 	nd.name = name
-	if icon == nil {
-		if t.parentIcon != nil {
-			nd.icon = t.parentIcon
-		}
-	} else {
+	if icon != nil {
 		nd.icon = icon
 	}
 	t.tm.roots = append(t.tm.roots, nd)
 	return nd
 }
 
-/**
-*	Create
-**/
-func (t *TreeView) Create() {
-	t.tv.SetModel(t.tm)
-	t.wm.Append(t.tv)
+func (t *TreeView) Update() {
+	for i := 0; i < len(t.tm.roots); i++ {
+		t.tv.EnsureVisible(t.tm.roots[i])
+	}
+	//t.tv.SetModel(t.tm)
 }
