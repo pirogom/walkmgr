@@ -128,8 +128,6 @@ func (wm *WalkUI) NewTreeView() *TreeView {
 	nd.tv, _ = walk.NewTreeView(wm.Parent())
 	nd.wm = wm
 	nd.tm = new(TreeModel)
-	nd.tv.SetModel(nd.tm)
-	nd.wm.Append(nd.tv)
 	return &nd
 }
 
@@ -146,9 +144,10 @@ func (t *TreeView) AddItem(name string, icon *walk.Icon) *TreeViewItem {
 	return nd
 }
 
-func (t *TreeView) Update() {
-	for i := 0; i < len(t.tm.roots); i++ {
-		t.tv.EnsureVisible(t.tm.roots[i])
-	}
-	//t.tv.SetModel(t.tm)
+/**
+*	Create
+**/
+func (t *TreeView) Create() {
+	t.tv.SetModel(t.tm)
+	t.wm.Append(t.tv)
 }
