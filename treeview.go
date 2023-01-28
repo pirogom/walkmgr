@@ -21,6 +21,21 @@ type TreeViewItem struct {
 	parent   *TreeViewItem
 	children []*TreeViewItem
 	icon     *walk.Icon
+	data     interface{}
+}
+
+/**
+*	Data
+**/
+func (d *TreeViewItem) Data() interface{} {
+	return d.data
+}
+
+/**
+*	SetData
+**/
+func (d *TreeViewItem) SetData(data interface{}) {
+	d.data = data
 }
 
 /**
@@ -160,4 +175,32 @@ func (t *TreeView) GetTreeView() *walk.TreeView {
 **/
 func (t *TreeView) UpdateItems() error {
 	return t.tv.UpdateItems()
+}
+
+/**
+*	CurrentItem
+**/
+func (t *TreeView) CurrentItem() *TreeViewItem {
+	return t.tv.CurrentItem().(*TreeViewItem)
+}
+
+/**
+*	SetCurrentItem
+**/
+func (t *TreeView) SetCurrentItem(ti *TreeViewItem) error {
+	return t.tv.SetCurrentItem(ti)
+}
+
+/**
+*	CurrentItemChanged
+**/
+func (t *TreeView) CurrentItemChanged(f func()) int {
+	return t.tv.CurrentItemChanged().Attach(f)
+}
+
+/**
+*	SetExpanded
+**/
+func (t *TreeView) SetExpanded(item *TreeViewItem, onoff bool) error {
+	return t.tv.SetExpanded(item, onoff)
 }
