@@ -149,6 +149,13 @@ func (t *TreeView) AddItem(name string, icon *walk.Icon) *TreeViewItem {
 }
 
 /**
+*	GetTreeView
+**/
+func (t *TreeView) GetTreeView() *walk.TreeView {
+	return t.tv
+}
+
+/**
 *	UpdateItems
 **/
 func (t *TreeView) UpdateItems() error {
