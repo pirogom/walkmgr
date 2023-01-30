@@ -151,6 +151,15 @@ func (wm *WalkUI) NewTreeView() *TreeView {
 }
 
 /**
+*	Clear
+**/
+func (t *TreeView) Clear() {
+	t.tm = nil
+	t.tm = new(TreeModel)
+	t.tv.SetModel(t.tm)
+}
+
+/**
 *	AddItem
 **/
 func (t *TreeView) AddItem(name string, icon *walk.Icon) *TreeViewItem {
