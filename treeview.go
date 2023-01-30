@@ -154,9 +154,8 @@ func (wm *WalkUI) NewTreeView() *TreeView {
 *	Clear
 **/
 func (t *TreeView) Clear() {
-	t.tm = nil
-	t.tm = new(TreeModel)
-	t.tv.SetModel(t.tm)
+	t.tm.roots = nil
+	t.tv.UpdateItems()
 }
 
 /**
@@ -212,4 +211,24 @@ func (t *TreeView) CurrentItemChanged(f func()) int {
 **/
 func (t *TreeView) SetExpanded(item *TreeViewItem, onoff bool) error {
 	return t.tv.SetExpanded(item, onoff)
+}
+
+/**
+*	ExpandChildren
+**/
+func (t *TreeView) ExpandChildren(arr []*TreeViewItem, onoff bool) {
+	for _, v := range arr {
+		t.tv.SetExpanded(v, onoff)
+		t.ExpandChildren(v.children, onoff)
+	}
+}
+
+/**
+*	AllExpanded
+**/
+func (t *TreeView) AllExpanded(onoff bool) {
+	for _, v := range t.tm.roots {
+		t.tv.SetExpanded(v, onoff)
+		t.ExpandChildren(v.children, onoff)
+	}
 }
