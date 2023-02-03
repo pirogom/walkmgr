@@ -232,3 +232,25 @@ func (t *TreeView) AllExpanded(onoff bool) {
 		t.ExpandChildren(v.children, onoff)
 	}
 }
+
+/**
+*	findItemByData
+**/
+func (t *TreeView) findItemFromData(inList *[]*TreeViewItem, data interface{}) *TreeViewItem {
+	for i := 0; i < len(*inList); i++ {
+		if (*inList)[i].data == data {
+			return (*inList)[i]
+		}
+
+		ti := t.findItemFromData(&(*inList)[i].children, data)
+
+		if ti != nil {
+			return ti
+		}
+	}
+	return nil
+}
+
+func (t *TreeView) FindItem(data interface{}) *TreeViewItem {
+	return t.findItemFromData(&t.tm.roots, data)
+}
