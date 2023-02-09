@@ -178,6 +178,10 @@ func (t *TreeView) GetTreeView() *walk.TreeView {
 	return t.tv
 }
 
+func (t *TreeView) Tv() *walk.TreeView {
+	return t.tv
+}
+
 /**
 *	UpdateItems
 **/
