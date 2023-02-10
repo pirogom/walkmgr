@@ -59,6 +59,10 @@ func (d *TreeViewItem) Text() string {
 	return d.name
 }
 
+func (d *TreeViewItem) SetText(t string) {
+	d.name = t
+}
+
 /**
 *	Parent
 **/
