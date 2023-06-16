@@ -1,4 +1,4 @@
-module walmmgr
+module walkmgr
 
 go 1.20
 
