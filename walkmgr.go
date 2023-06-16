@@ -18,6 +18,7 @@ var (
 *	WalkUI
 **/
 type WalkUI struct {
+	dialog        *walk.Dialog
 	window        *walk.MainWindow
 	parentList    *list.List
 	IsIgnoreClose bool
@@ -41,55 +42,73 @@ func UseWalkPositionMgr() bool {
 }
 
 /**
-*	CreateDialog
+*	NewDialog
 **/
-// func CreateDialog(owner *walk.MainWindow, title string, width, height int, margin *walk.Margins, lt ...LayoutType) *WalkUI {
-// 	wm := WalkUI{}
+func NewDialog(owner *walk.MainWindow, title string, width, height int, margin *walk.Margins, lt ...LayoutType) *WalkUI {
+	wm := WalkUI{}
 
-// 	dlg, dlgErr := walk.NewDialog(owner)
+	dlg, dlgErr := walk.NewDialog(owner)
 
-// 	if dlgErr != nil {
-// 		panic(dlgErr.Error())
-// 	}
+	if dlgErr != nil {
+		panic(dlgErr.Error())
+	}
 
-// 	wm.window = dlg
-// 	wm.parentList = list.New()
+	wm.dialog = dlg
+	wm.window = nil
+	wm.parentList = list.New()
 
-// 	wm.window.SetTitle(title)
-// 	wm.window.SetWidth(width)
-// 	wm.window.SetHeight(height)
+	wm.dialog.SetTitle(title)
+	wm.dialog.SetWidth(width)
+	wm.dialog.SetHeight(height)
+	wm.dialog.SetMinMaxSize(walk.Size{Width: width, Height: height}, walk.Size{Width: width, Height: height})
+	wm.NoResize()
 
-// 	var layout walk.Layout
+	var layout walk.Layout
 
-// 	if len(lt) > 0 {
-// 		// set layout
-// 		switch lt[0] {
-// 		case LAYOUT_VERT:
-// 			layout = walk.NewVBoxLayout()
-// 		case LAYOUT_HORI:
-// 			layout = walk.NewHBoxLayout()
-// 		case LAYOUT_FLOW:
-// 			layout = walk.NewFlowLayout()
-// 		default:
-// 			layout = walk.NewVBoxLayout()
-// 		}
-// 	} else {
-// 		layout = walk.NewVBoxLayout()
-// 	}
-// 	if margin != nil {
-// 		layout.SetMargins(*margin)
-// 	}
-// 	wm.window.SetLayout(layout)
+	if len(lt) > 0 {
+		// set layout
+		switch lt[0] {
+		case LAYOUT_VERT:
+			layout = walk.NewVBoxLayout()
+		case LAYOUT_HORI:
+			layout = walk.NewHBoxLayout()
+		case LAYOUT_FLOW:
+			layout = walk.NewFlowLayout()
+		default:
+			layout = walk.NewVBoxLayout()
+		}
+	} else {
+		layout = walk.NewVBoxLayout()
+	}
+	if margin != nil {
+		layout.SetMargins(*margin)
+	}
+	wm.dialog.SetLayout(layout)
 
-// 	return &wm
-// }
+	// windows start
+	wm.dialog.Starting().Attach(func() {
+		if wm.startingFunc != nil {
+			wm.startingFunc()
+		}
+	})
 
-/**
-*	WindowPos
-**/
-// func (wm *WalkUI) DoModal() {
-// 	wm.window.Run()
-// }
+	// closing
+	wm.dialog.Closing().Attach(func(canceled *bool, reason walk.CloseReason) {
+		if wm.IsIgnoreClose && wm.Dlg().Visible() {
+			*canceled = true
+			return
+		}
+
+		if wm.closingFunc != nil {
+			if !wm.closingFunc() {
+				*canceled = true
+				return
+			}
+		}
+	})
+
+	return &wm
+}
 
 /**
 *	CreateWindow
@@ -109,6 +128,7 @@ func CreateWindow(title string, posX, posY int, width, height int, margin *walk.
 		panic("create window failed. please check manifest and .syso")
 	}
 	wm.window = window
+	wm.dialog = nil
 	wm.parentList = list.New()
 
 	wm.window.SetTitle(title)
@@ -216,6 +236,7 @@ func NewAds(title string, width int, height int) *WalkUI {
 	window.DisablePositionMgr()
 
 	wm.window = window
+	wm.dialog = nil
 	wm.parentList = list.New()
 
 	wm.window.SetTitle(title)
@@ -381,6 +402,9 @@ func (wm *WalkUI) Closing(closingFunc WinCloseFunc) {
 *	GetHWND
 **/
 func (wm *WalkUI) GetHWND() win.HWND {
+	if wm.dialog != nil {
+		return wm.dialog.Handle()
+	}
 	return wm.window.Handle()
 }
 
@@ -388,13 +412,30 @@ func (wm *WalkUI) GetHWND() win.HWND {
 *	Window
 **/
 func (wm *WalkUI) Window() *walk.MainWindow {
+	if wm.dialog != nil {
+		return nil
+	}
 	return wm.window
+}
+
+/**
+*	GetDlg
+**/
+func (wm *WalkUI) Dlg() *walk.Dialog {
+	if wm.dialog == nil {
+		return nil
+	}
+	return wm.dialog
 }
 
 /**
 *	SetTitle
 **/
 func (wm *WalkUI) SetTitle(title string) *WalkUI {
+	if wm.dialog != nil {
+		wm.dialog.SetTitle(title)
+		return wm
+	}
 	wm.window.SetTitle(title)
 	return wm
 }
@@ -403,6 +444,11 @@ func (wm *WalkUI) SetTitle(title string) *WalkUI {
 *	SetSize
 **/
 func (wm *WalkUI) SetSize(width int, height int) *WalkUI {
+	if wm.dialog != nil {
+		wm.dialog.SetWidth(width)
+		wm.dialog.SetHeight(height)
+		return wm
+	}
 	wm.window.SetWidth(width)
 	wm.window.SetHeight(height)
 	return wm
@@ -413,6 +459,10 @@ func (wm *WalkUI) SetSize(width int, height int) *WalkUI {
 **/
 func (wm *WalkUI) SetMinSize(width int, height int) *WalkUI {
 	maxSize := wm.window.MaxSize()
+	if wm.dialog != nil {
+		wm.dialog.SetMinMaxSize(walk.Size{Width: width, Height: height}, maxSize)
+		return wm
+	}
 	wm.window.SetMinMaxSize(walk.Size{Width: width, Height: height}, maxSize)
 	return wm
 }
@@ -422,6 +472,10 @@ func (wm *WalkUI) SetMinSize(width int, height int) *WalkUI {
 **/
 func (wm *WalkUI) SetMaxSize(width int, height int) *WalkUI {
 	minSize := wm.window.MinSize()
+	if wm.dialog != nil {
+		wm.dialog.SetMinMaxSize(minSize, walk.Size{Width: width, Height: height})
+		return wm
+	}
 	wm.window.SetMinMaxSize(minSize, walk.Size{Width: width, Height: height})
 	return wm
 }
@@ -498,6 +552,11 @@ func (wm *WalkUI) SetForeground() {
 *	Close
 **/
 func (wm *WalkUI) Close() {
+	if wm.dialog != nil {
+		wm.dialog.SetVisible(false)
+		wm.dialog.Close(1)
+		return
+	}
 	wm.Sync(func() {
 		wm.window.SetVisible(false)
 		wm.window.Close()
@@ -508,6 +567,11 @@ func (wm *WalkUI) Close() {
 *	Start
 **/
 func (wm *WalkUI) Start() {
+	if wm.dialog != nil {
+		wm.dialog.Show()
+		wm.dialog.Run()
+		return
+	}
 	wm.window.Show()
 	wm.window.Run()
 }
@@ -516,6 +580,12 @@ func (wm *WalkUI) Start() {
 *	StartForeground
 **/
 func (wm *WalkUI) StartForeground() {
+	if wm.dialog != nil {
+		wm.SetForeground()
+		wm.dialog.Show()
+		wm.dialog.Run()
+		return
+	}
 	wm.SetForeground()
 	wm.window.Show()
 	wm.window.Run()
@@ -525,6 +595,11 @@ func (wm *WalkUI) StartForeground() {
 *	HideStart
 **/
 func (wm *WalkUI) HideStart() {
+	if wm.dialog != nil {
+		wm.dialog.Hide()
+		wm.dialog.Run()
+		return
+	}
 	wm.window.Hide()
 	wm.window.Run()
 }
@@ -533,6 +608,10 @@ func (wm *WalkUI) HideStart() {
 *	Hide
 **/
 func (wm *WalkUI) Hide() {
+	if wm.dialog != nil {
+		wm.dialog.Hide()
+		return
+	}
 	wm.window.Hide()
 }
 
@@ -540,6 +619,10 @@ func (wm *WalkUI) Hide() {
 *	Show
 **/
 func (wm *WalkUI) Show() {
+	if wm.dialog != nil {
+		wm.dialog.Show()
+		return
+	}
 	wm.window.Show()
 }
 
@@ -554,6 +637,10 @@ func (wm *WalkUI) IgnoreClosing() {
 *	Sync
 **/
 func (wm *WalkUI) Sync(syncFunc func()) {
+	if wm.dialog != nil {
+		wm.dialog.Synchronize(syncFunc)
+		return
+	}
 	wm.window.Synchronize(syncFunc)
 }
 
@@ -562,7 +649,11 @@ func (wm *WalkUI) Sync(syncFunc func()) {
 **/
 func (wm *WalkUI) Append(item walk.Widget) {
 	if wm.parentList.Len() == 0 {
-		wm.window.Children().Add(item)
+		if wm.dialog != nil {
+			wm.dialog.Children().Add(item)
+		} else {
+			wm.window.Children().Add(item)
+		}
 	} else {
 		parent := wm.parentList.Back().Value.(walk.Container)
 		parent.Children().Add(item)
@@ -577,7 +668,11 @@ func (wm *WalkUI) Parent() walk.Container {
 		parent := wm.parentList.Back().Value.(walk.Container)
 		return parent
 	} else {
-		return wm.window
+		if wm.dialog != nil {
+			return wm.dialog
+		} else {
+			return wm.window
+		}
 	}
 }
 
@@ -596,5 +691,8 @@ func (wm *WalkUI) End() {
 *	AddMenu
 **/
 func (wm *WalkUI) AddMenu(in *MenuMgr) {
+	if wm.dialog != nil {
+		return
+	}
 	wm.window.Menu().Actions().Add(in.MenuAct)
 }
