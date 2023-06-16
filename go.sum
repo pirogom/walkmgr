@@ -1,0 +1,8 @@
+github.com/pirogom/walk v0.0.0-20230128105705-492944454fc3 h1:IX3BTIneZe5FIVQUZcR8/6kXQcxYxx8QTb78mSrr8zI=
+github.com/pirogom/walk v0.0.0-20230128105705-492944454fc3/go.mod h1:QXBXBgidnjUSd+doq7lqmLIgFYogOBR8uvuIqCB20b4=
+github.com/pirogom/win v0.0.0-20220414140423-11dc73c0bb71 h1:dWwLEK6o2ZQXLcKDbs1ud1qj/BxQRWVldXFepN1Y8YI=
+github.com/pirogom/win v0.0.0-20220414140423-11dc73c0bb71/go.mod h1:qMkYcyO2m1q45Ibh/wjrz36Je0PNXrdesmZo8RgR5KQ=
+golang.org/x/sys v0.0.0-20201018230417-eeed37f84f13 h1:5jaG59Zhd+8ZXe8C+lgiAGqkOaZBruqrWclLkgAww34=
+golang.org/x/sys v0.0.0-20201018230417-eeed37f84f13/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+gopkg.in/Knetic/govaluate.v3 v3.0.0 h1:18mUyIt4ZlRlFZAAfVetz4/rzlJs9yhN+U02F4u1AOc=
+gopkg.in/Knetic/govaluate.v3 v3.0.0/go.mod h1:csKLBORsPbafmSCGTEh3U7Ozmsuq8ZSIlKk1bcqph0E=
