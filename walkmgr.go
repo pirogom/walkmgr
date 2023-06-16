@@ -41,6 +41,57 @@ func UseWalkPositionMgr() bool {
 }
 
 /**
+*	CreateDialog
+**/
+// func CreateDialog(owner *walk.MainWindow, title string, width, height int, margin *walk.Margins, lt ...LayoutType) *WalkUI {
+// 	wm := WalkUI{}
+
+// 	dlg, dlgErr := walk.NewDialog(owner)
+
+// 	if dlgErr != nil {
+// 		panic(dlgErr.Error())
+// 	}
+
+// 	wm.window = dlg
+// 	wm.parentList = list.New()
+
+// 	wm.window.SetTitle(title)
+// 	wm.window.SetWidth(width)
+// 	wm.window.SetHeight(height)
+
+// 	var layout walk.Layout
+
+// 	if len(lt) > 0 {
+// 		// set layout
+// 		switch lt[0] {
+// 		case LAYOUT_VERT:
+// 			layout = walk.NewVBoxLayout()
+// 		case LAYOUT_HORI:
+// 			layout = walk.NewHBoxLayout()
+// 		case LAYOUT_FLOW:
+// 			layout = walk.NewFlowLayout()
+// 		default:
+// 			layout = walk.NewVBoxLayout()
+// 		}
+// 	} else {
+// 		layout = walk.NewVBoxLayout()
+// 	}
+// 	if margin != nil {
+// 		layout.SetMargins(*margin)
+// 	}
+// 	wm.window.SetLayout(layout)
+
+// 	return &wm
+// }
+
+/**
+*	WindowPos
+**/
+// func (wm *WalkUI) DoModal() {
+// 	wm.window.Run()
+// }
+
+/**
 *	CreateWindow
 **/
 func CreateWindow(title string, posX, posY int, width, height int, margin *walk.Margins, lt ...LayoutType) *WalkUI {
