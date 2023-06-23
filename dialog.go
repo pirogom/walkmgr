@@ -1,5 +1,11 @@
 package walkmgr
 
+import (
+	"container/list"
+
+	"github.com/pirogom/walk"
+)
+
 /**
 *	NewDialog
 **/
@@ -100,7 +106,7 @@ func (wm *WalkUI) CloseDLG(res int) {
 func (wm *WalkUI) StartDLG() int {
 	if wm.dialog == nil {
 		panic("StartDLG method is not support non dialog window. Use Start() method")
-		return
+		return 0
 	}
 	wm.dialog.Show()
 	return wm.dialog.Run()
@@ -112,7 +118,7 @@ func (wm *WalkUI) StartDLG() int {
 func (wm *WalkUI) StartForegroundDLG() int {
 	if wm.dialog == nil {
 		panic("StartForegroundDLG method is not support non dialog window. Use StartForeground() method")
-		return
+		return 0
 	}
 	wm.SetForeground()
 	wm.dialog.Show()
@@ -125,7 +131,7 @@ func (wm *WalkUI) StartForegroundDLG() int {
 func (wm *WalkUI) HideStartDLG() int {
 	if wm.dialog == nil {
 		panic("HideStartDLG method is not support non dialog window. Use HideStart() method")
-		return
+		return 0
 	}
 	wm.dialog.Hide()
 	return wm.dialog.Run()
@@ -137,7 +143,7 @@ func (wm *WalkUI) HideStartDLG() int {
 func (wm *WalkUI) DlgResult() int {
 	if wm.dialog == nil {
 		panic("DlgResult() method is not support non dialog window.")
-		return
+		return 0
 	}
 	return wm.dialog.Result()
 }
@@ -145,10 +151,10 @@ func (wm *WalkUI) DlgResult() int {
 /**
 *	SetOkButton
 **/
-func (wm *WalkUI) SetOkButton(btn *PushButton) error {
+func (wm *WalkUI) SetOkButton(btn *walk.PushButton) error {
 	if wm.dialog == nil {
 		panic("SetOkButton does not support non dialog window.")
-		return
+		return nil
 	}
 	return wm.dialog.SetDefaultButton(btn)
 }
@@ -156,10 +162,10 @@ func (wm *WalkUI) SetOkButton(btn *PushButton) error {
 /**
 *	SetCancelButton
 **/
-func (wm *WalkUI) SetCancelButton(btn *PushButton) error {
+func (wm *WalkUI) SetCancelButton(btn *walk.PushButton) error {
 	if wm.dialog == nil {
 		panic("SetCancelButton does not support non dialog window.")
-		return
+		return nil
 	}
 	return wm.dialog.SetCancelButton(btn)
 }
