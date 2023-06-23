@@ -1,4 +1,4 @@
-module github.com/pirogom/walkmgr/v2
+module github.com/pirogom/walkmgr v0.0.1
 
 go 1.20
 

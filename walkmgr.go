@@ -42,75 +42,6 @@ func UseWalkPositionMgr() bool {
 }
 
 /**
-*	NewDialog
-**/
-func NewDialog(owner *walk.MainWindow, title string, width, height int, margin *walk.Margins, lt ...LayoutType) *WalkUI {
-	wm := WalkUI{}
-
-	dlg, dlgErr := walk.NewDialog(owner)
-
-	if dlgErr != nil {
-		panic(dlgErr.Error())
-	}
-
-	wm.dialog = dlg
-	wm.window = nil
-	wm.parentList = list.New()
-
-	wm.dialog.SetTitle(title)
-	wm.dialog.SetWidth(width)
-	wm.dialog.SetHeight(height)
-	wm.dialog.SetMinMaxSize(walk.Size{Width: width, Height: height}, walk.Size{Width: width, Height: height})
-	wm.NoResize()
-
-	var layout walk.Layout
-
-	if len(lt) > 0 {
-		// set layout
-		switch lt[0] {
-		case LAYOUT_VERT:
-			layout = walk.NewVBoxLayout()
-		case LAYOUT_HORI:
-			layout = walk.NewHBoxLayout()
-		case LAYOUT_FLOW:
-			layout = walk.NewFlowLayout()
-		default:
-			layout = walk.NewVBoxLayout()
-		}
-	} else {
-		layout = walk.NewVBoxLayout()
-	}
-	if margin != nil {
-		layout.SetMargins(*margin)
-	}
-	wm.dialog.SetLayout(layout)
-
-	// windows start
-	wm.dialog.Starting().Attach(func() {
-		if wm.startingFunc != nil {
-			wm.startingFunc()
-		}
-	})
-
-	// closing
-	wm.dialog.Closing().Attach(func(canceled *bool, reason walk.CloseReason) {
-		if wm.IsIgnoreClose && wm.Dlg().Visible() {
-			*canceled = true
-			return
-		}
-
-		if wm.closingFunc != nil {
-			if !wm.closingFunc() {
-				*canceled = true
-				return
-			}
-		}
-	})
-
-	return &wm
-}
-
-/**
 *	CreateWindow
 **/
 func CreateWindow(title string, posX, posY int, width, height int, margin *walk.Margins, lt ...LayoutType) *WalkUI {
@@ -413,19 +344,10 @@ func (wm *WalkUI) GetHWND() win.HWND {
 **/
 func (wm *WalkUI) Window() *walk.MainWindow {
 	if wm.dialog != nil {
+		panic("Window() method is not support dialog window. Use Dlg() method")
 		return nil
 	}
 	return wm.window
-}
-
-/**
-*	GetDlg
-**/
-func (wm *WalkUI) Dlg() *walk.Dialog {
-	if wm.dialog == nil {
-		return nil
-	}
-	return wm.dialog
 }
 
 /**
@@ -553,8 +475,7 @@ func (wm *WalkUI) SetForeground() {
 **/
 func (wm *WalkUI) Close() {
 	if wm.dialog != nil {
-		wm.dialog.SetVisible(false)
-		wm.dialog.Close(1)
+		panic("Close() method is not support dialog window. Use CloseDLG() method.")
 		return
 	}
 	wm.Sync(func() {
@@ -568,8 +489,7 @@ func (wm *WalkUI) Close() {
 **/
 func (wm *WalkUI) Start() {
 	if wm.dialog != nil {
-		wm.dialog.Show()
-		wm.dialog.Run()
+		panic("Start() method is not support dialog window. Use StartDLG() method")
 		return
 	}
 	wm.window.Show()
@@ -581,9 +501,7 @@ func (wm *WalkUI) Start() {
 **/
 func (wm *WalkUI) StartForeground() {
 	if wm.dialog != nil {
-		wm.SetForeground()
-		wm.dialog.Show()
-		wm.dialog.Run()
+		panic("StartForeground() method is not support dialog window. Use StartForegroundDLG() method")
 		return
 	}
 	wm.SetForeground()
@@ -596,8 +514,7 @@ func (wm *WalkUI) StartForeground() {
 **/
 func (wm *WalkUI) HideStart() {
 	if wm.dialog != nil {
-		wm.dialog.Hide()
-		wm.dialog.Run()
+		panic("HideStart() method is not support dialog window. Use HideStartDLG() method")
 		return
 	}
 	wm.window.Hide()
@@ -692,6 +609,7 @@ func (wm *WalkUI) End() {
 **/
 func (wm *WalkUI) AddMenu(in *MenuMgr) {
 	if wm.dialog != nil {
+		panic("dialog window does not support menu.")
 		return
 	}
 	wm.window.Menu().Actions().Add(in.MenuAct)
