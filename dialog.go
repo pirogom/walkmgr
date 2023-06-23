@@ -81,7 +81,6 @@ func NewDialog(owner *walk.MainWindow, title string, width, height int, margin *
 func (wm *WalkUI) Dlg() *walk.Dialog {
 	if wm.dialog == nil {
 		panic("Dlg() method is not support non dialog window. Use Window() method.")
-		return nil
 	}
 	return wm.dialog
 }
@@ -92,7 +91,6 @@ func (wm *WalkUI) Dlg() *walk.Dialog {
 func (wm *WalkUI) CloseDLG(res int) {
 	if wm.dialog == nil {
 		panic("CloseDLG method is not support non dialog window. Use Close() method")
-		return
 	}
 	wm.Sync(func() {
 		wm.dialog.SetVisible(false)
@@ -106,7 +104,6 @@ func (wm *WalkUI) CloseDLG(res int) {
 func (wm *WalkUI) StartDLG() int {
 	if wm.dialog == nil {
 		panic("StartDLG method is not support non dialog window. Use Start() method")
-		return 0
 	}
 	wm.dialog.Show()
 	return wm.dialog.Run()
@@ -118,7 +115,6 @@ func (wm *WalkUI) StartDLG() int {
 func (wm *WalkUI) StartForegroundDLG() int {
 	if wm.dialog == nil {
 		panic("StartForegroundDLG method is not support non dialog window. Use StartForeground() method")
-		return 0
 	}
 	wm.SetForeground()
 	wm.dialog.Show()
@@ -131,7 +127,6 @@ func (wm *WalkUI) StartForegroundDLG() int {
 func (wm *WalkUI) HideStartDLG() int {
 	if wm.dialog == nil {
 		panic("HideStartDLG method is not support non dialog window. Use HideStart() method")
-		return 0
 	}
 	wm.dialog.Hide()
 	return wm.dialog.Run()
@@ -143,7 +138,6 @@ func (wm *WalkUI) HideStartDLG() int {
 func (wm *WalkUI) DlgResult() int {
 	if wm.dialog == nil {
 		panic("DlgResult() method is not support non dialog window.")
-		return 0
 	}
 	return wm.dialog.Result()
 }
@@ -154,7 +148,6 @@ func (wm *WalkUI) DlgResult() int {
 func (wm *WalkUI) SetOkButton(btn *walk.PushButton) error {
 	if wm.dialog == nil {
 		panic("SetOkButton does not support non dialog window.")
-		return nil
 	}
 	return wm.dialog.SetDefaultButton(btn)
 }
@@ -165,7 +158,20 @@ func (wm *WalkUI) SetOkButton(btn *walk.PushButton) error {
 func (wm *WalkUI) SetCancelButton(btn *walk.PushButton) error {
 	if wm.dialog == nil {
 		panic("SetCancelButton does not support non dialog window.")
-		return nil
 	}
 	return wm.dialog.SetCancelButton(btn)
+}
+
+func (wm *WalkUI) Accept() {
+	if wm.dialog == nil {
+		panic("do not use for non dialog window")
+	}
+	wm.dialog.Accept()
+}
+
+func (wm *WalkUI) Cancel() {
+	if wm.dialog == nil {
+		panic("do not use for non dialog window")
+	}
+	wm.dialog.Cancel()
 }
