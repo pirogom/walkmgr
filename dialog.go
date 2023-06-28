@@ -50,6 +50,10 @@ func NewDialog(owner *walk.MainWindow, title string, width, height int, margin *
 	}
 	wm.dialog.SetLayout(layout)
 
+	if defaultIcon != nil {
+		wm.dialog.SetIcon(defaultIcon)
+	}
+
 	// windows start
 	wm.dialog.Starting().Attach(func() {
 		if wm.startingFunc != nil {
