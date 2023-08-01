@@ -614,3 +614,5 @@ func (wm *WalkUI) AddMenu(in *MenuMgr) {
 	}
 	wm.window.Menu().Actions().Add(in.MenuAct)
 }
+
+
