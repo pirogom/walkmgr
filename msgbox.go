@@ -19,7 +19,7 @@ func (wm *WalkUI) MsgBox(msg string) {
 /**
  * 	Confirm
  */
-func (wm *WalkUI) Confirm(msg string) {
+func (wm *WalkUI) Confirm(msg string) bool {
 	if wm.dialog != nil {
 		if walk.MsgBox(wm.dialog, "알림", msg, walk.MsgBoxYesNo|walk.MsgBoxSetForeground) == win.IDNO {
 			return false
