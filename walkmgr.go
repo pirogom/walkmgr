@@ -9,22 +9,31 @@ import (
 
 type WinCloseFunc func() bool
 type WinStartFunc func()
+type WinActiveFunc func()
 
 var (
 	useWalkPositionMgr bool
 )
 
+type webview2InitData struct {
+	wv2         *WebView2
+	successFunc func()
+	failFunc    func()
+}
+
 /**
 *	WalkUI
 **/
 type WalkUI struct {
-	dialog        *walk.Dialog
-	window        *walk.MainWindow
-	parentList    *list.List
-	IsIgnoreClose bool
-	startingFunc  WinStartFunc
-	closingFunc   WinCloseFunc
-	tb            *walk.ToolBar
+	dialog                *walk.Dialog
+	window                *walk.MainWindow
+	parentList            *list.List
+	IsIgnoreClose         bool
+	startingFunc          WinStartFunc
+	activeFunc            WinActiveFunc
+	closingFunc           WinCloseFunc
+	webview2InitFunctions []webview2InitData
+	tb                    *walk.ToolBar
 }
 
 /**
@@ -97,6 +106,14 @@ func CreateWindow(title string, posX, posY int, width, height int, margin *walk.
 		wm.MoveCenter()
 		if wm.startingFunc != nil {
 			wm.startingFunc()
+		}
+	})
+
+	// windows active
+	wm.window.Activating().Attach(func() {
+		wm.webview2InitProc()
+		if wm.activeFunc != nil {
+			wm.activeFunc()
 		}
 	})
 
@@ -188,6 +205,14 @@ func NewAds(title string, width int, height int) *WalkUI {
 		wm.MoveAds()
 		if wm.startingFunc != nil {
 			wm.startingFunc()
+		}
+	})
+
+	// windows active
+	wm.window.Activating().Attach(func() {
+		wm.webview2InitProc()
+		if wm.activeFunc != nil {
+			wm.activeFunc()
 		}
 	})
 
@@ -320,6 +345,13 @@ func (wm *WalkUI) MoveCenter() {
 **/
 func (wm *WalkUI) Starting(startingFunc WinStartFunc) {
 	wm.startingFunc = startingFunc
+}
+
+/*
+Activating
+*/
+func (wm *WalkUI) Activating(activeFunc WinActiveFunc) {
+	wm.activeFunc = activeFunc
 }
 
 /**
@@ -614,5 +646,3 @@ func (wm *WalkUI) AddMenu(in *MenuMgr) {
 	}
 	wm.window.Menu().Actions().Add(in.MenuAct)
 }
-
-
