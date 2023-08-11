@@ -482,7 +482,7 @@ func (wv2 *WebView2) PutIsSwipeNavigationEnabled(enabled bool) error {
 /**
 *	WebView2
 **/
-func (wm *WalkUI) WebView2(dataPath string, succssFunc func(), failFunc func()) *WebView2 {
+func (wm *WalkUI) WebView2(dataPath string, sucessFunc func(), failFunc func()) *WebView2 {
 	wv2 := WebView2{}
 
 	wv2.wv = edge.NewChromium()
@@ -497,11 +497,11 @@ func (wm *WalkUI) WebView2(dataPath string, succssFunc func(), failFunc func()) 
 
 	id := webview2InitData{}
 	id.wv2 = &wv2
-	id.successFunc = succssFunc
+	id.sucessFunc = sucessFunc
 	id.failFunc = failFunc
 
 	wm.webview2InitFunctions = append(wm.webview2InitFunctions, id)
-	
+
 	return &wv2
 }
 
@@ -514,8 +514,8 @@ func (wm *WalkUI) webview2InitProc() {
 		wm.Sync(func() {
 			if wm.webview2InitFunctions[i].wv2.wv.Embed(uintptr(wm.webview2InitFunctions[i].wv2.iv.Handle())) {
 				wm.webview2InitFunctions[i].wv2.inited = true
-				if wm.webview2InitFunctions[i].succssFunc != nil {
-					wm.webview2InitFunctions[i].succssFunc()
+				if wm.webview2InitFunctions[i].sucessFunc != nil {
+					wm.webview2InitFunctions[i].sucessFunc()
 				}
 				wm.webview2InitFunctions[i].wv2.wv.Resize()
 			} else {

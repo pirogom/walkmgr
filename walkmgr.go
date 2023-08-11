@@ -16,9 +16,9 @@ var (
 )
 
 type webview2InitData struct {
-	wv2         *WebView2
-	successFunc func()
-	failFunc    func()
+	wv2        *WebView2
+	sucessFunc func()
+	failFunc   func()
 }
 
 /**
