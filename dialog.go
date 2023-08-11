@@ -61,14 +61,6 @@ func NewDialog(owner *walk.MainWindow, title string, width, height int, margin *
 		}
 	})
 
-	// windows active
-	wm.window.Activating().Attach(func() {
-		wm.webview2InitProc()
-		if wm.activeFunc != nil {
-			wm.activeFunc()
-		}
-	})
-
 	// closing
 	wm.dialog.Closing().Attach(func(canceled *bool, reason walk.CloseReason) {
 		if wm.IsIgnoreClose && wm.Dlg().Visible() {

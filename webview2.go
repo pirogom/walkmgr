@@ -482,7 +482,7 @@ func (wv2 *WebView2) PutIsSwipeNavigationEnabled(enabled bool) error {
 /**
 *	WebView2
 **/
-func (wm *WalkUI) WebView2(dataPath string, sucessFunc func(), failFunc func()) *WebView2 {
+func (wm *WalkUI) WebView2(dataPath string, succssFunc func(), failFunc func()) *WebView2 {
 	wv2 := WebView2{}
 
 	wv2.wv = edge.NewChromium()
@@ -495,34 +495,18 @@ func (wm *WalkUI) WebView2(dataPath string, sucessFunc func(), failFunc func()) 
 		wv2.SizeChanged()
 	})
 
-	id := webview2InitData{}
-	id.wv2 = &wv2
-	id.sucessFunc = sucessFunc
-	id.failFunc = failFunc
-
-	wm.webview2InitFunctions = append(wm.webview2InitFunctions, id)
-
-	return &wv2
-}
-
-/*
-*
-webview2InitProc
-*/
-func (wm *WalkUI) webview2InitProc() {
-	for i := 0; i < len(wm.webview2InitFunctions); i++ {
-		wm.Sync(func() {
-			if wm.webview2InitFunctions[i].wv2.wv.Embed(uintptr(wm.webview2InitFunctions[i].wv2.iv.Handle())) {
-				wm.webview2InitFunctions[i].wv2.inited = true
-				if wm.webview2InitFunctions[i].sucessFunc != nil {
-					wm.webview2InitFunctions[i].sucessFunc()
-				}
-				wm.webview2InitFunctions[i].wv2.wv.Resize()
-			} else {
-				if wm.webview2InitFunctions[i].failFunc != nil {
-					wm.webview2InitFunctions[i].failFunc()
-				}
+	wm.Sync(func() {
+		if wv2.wv.Embed(uintptr(wv2.iv.Handle())) {
+			wv2.inited = true
+			if succssFunc != nil {
+				succssFunc()
 			}
-		})
-	}
+			wv2.wv.Resize()
+		} else {
+			if failFunc != nil {
+				failFunc()
+			}
+		}
+	})
+	return &wv2
 }

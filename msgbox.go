@@ -33,5 +33,4 @@ func (wm *WalkUI) Confirm(msg string) bool {
 			return true
 		}
 	}
-
 }
