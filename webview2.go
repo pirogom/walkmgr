@@ -18,6 +18,10 @@ type WebView2 struct {
 	inited bool
 }
 
+func (wv2 *WebView2) GetIV() *walk.ImageView {
+	return wv2.iv
+}
+
 /**
  * IsInited
  */
