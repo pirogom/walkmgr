@@ -483,6 +483,10 @@ func (wv2 *WebView2) PutIsSwipeNavigationEnabled(enabled bool) error {
 	return cfg.PutIsSwipeNavigationEnabled(enabled)
 }
 
+func (wv2 *WebView2) GetWebView2() *edge.Chromium {
+	return wv2.wv
+}
+
 /**
 *	WebView2
 **/
